@@ -1,0 +1,12 @@
+A:\projects\DrAI\code\drake_ctrl\target\debug\deps\libyansi-c74ffa1a8922e65e.rmeta: C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\lib.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\macros.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\windows.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\paint.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\style.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\color.rs
+
+A:\projects\DrAI\code\drake_ctrl\target\debug\deps\libyansi-c74ffa1a8922e65e.rlib: C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\lib.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\macros.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\windows.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\paint.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\style.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\color.rs
+
+A:\projects\DrAI\code\drake_ctrl\target\debug\deps\yansi-c74ffa1a8922e65e.d: C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\lib.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\macros.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\windows.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\paint.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\style.rs C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\color.rs
+
+C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\lib.rs:
+C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\macros.rs:
+C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\windows.rs:
+C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\paint.rs:
+C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\style.rs:
+C:\Users\samue\.cargo\registry\src\index.crates.io-6f17d22bba15001f\yansi-0.5.1\src\color.rs:
