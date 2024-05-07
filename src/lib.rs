@@ -87,10 +87,11 @@ use crate::user_terminal::UserTerminal;
     }
 
     impl DrakeStation {
-        pub fn new(i2c : I2c, hw : &DrakeHardware, config : &DrakeConfig) -> Self {
+        pub fn new(i2c : I2c, hw : &DrakeHardware, config : &DrakeConfig, gpio : &Gpio) -> Self {
             Self {
                 servo_table: ServoTable::new(i2c).unwrap(), // TODO: Find solution without unwrap
                 user_terminal: UserTerminal::new(
+                    gpio,
                     hw.ut_start_switch,
                     hw.ut_start_led,
                     hw.ut_stop_switch,

@@ -1,24 +1,24 @@
-use syact::device::led::LED;
-use syact::device::pin::{InputPin, UniInPin};
+use rppal::gpio::{Gpio, InputPin};
 use syact::Setup;
+use syact::device::LED;
 
 pub struct UserTerminal {
-    switch_start : UniInPin,
+    switch_start : InputPin,
     led_start : LED,
 
-    switch_halt : UniInPin,
+    switch_halt : InputPin,
     led_halt : LED,
 }
 
 impl UserTerminal {
-    pub fn new(switch_start_pin : u8, led_start_pin : u8, switch_halt_pin : u8, led_halt_pin : u8) -> Self {
-        Self {
-            switch_start: UniInPin::new(switch_start_pin),
-            led_start: LED::new(led_start_pin),
+    pub fn new(gpio : &Gpio, switch_start_pin : u8, led_start_pin : u8, switch_halt_pin : u8, led_halt_pin : u8) -> Result<Self, syact::Error> {
+        Ok(Self {
+            switch_start: gpio.get(switch_start_pin)?.into_input(),
+            led_start: LED::new(gpio.get(led_start_pin)?.into_output()),
             
-            switch_halt: UniInPin::new(switch_halt_pin),
-            led_halt: LED::new(led_halt_pin)
-        }
+            switch_halt: gpio.get(switch_halt_pin)?.into_input(),
+            led_halt: LED::new(gpio.get(led_halt_pin)?.into_output())
+        })
     }
 
     // Buttons

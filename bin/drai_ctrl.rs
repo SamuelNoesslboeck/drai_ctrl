@@ -78,7 +78,7 @@ fn main() {
 
     // RDS
         let mut rob = drake_robot_new(&hardware, &config, &gpio);
-        let mut stat = DrakeStation::new(i2c, &hardware, &config);
+        let mut stat = DrakeStation::new(i2c, &hardware, &config, &gpio);
     // 
 
     // Lines

@@ -1,8 +1,8 @@
 use pwm_pca9685::{Address, Channel, Pca9685};
 use rppal::i2c::I2c;
-
 use syact::Setup;
-use syact::units::*;
+use syunit::*;
+
 
 // Servo signals
     /// The amount of ticks the servo PWM will stay on for it to be off (out of 4096)
