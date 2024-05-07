@@ -115,11 +115,11 @@ use crate::user_terminal::UserTerminal;
         type Robot = LinearXYStepperRobot;
 
         fn home(&mut self, rob : &mut Self::Robot) -> Result<(), sybot::Error> {
-            dbg!(take_simple_meas(&mut rob.comps_mut().x, &MEAS_DATA_X, SpeedFactor::MAX)?);
-            dbg!(take_simple_meas(&mut rob.comps_mut().y, &MEAS_DATA_Y, SpeedFactor::MAX)?);
-            dbg!(take_simple_meas(&mut rob.comps_mut().z, &MEAS_DATA_Z, SpeedFactor::MAX)?);
+            dbg!(take_simple_meas(&mut rob.comps_mut().x, &MEAS_DATA_X, Factor::MAX)?);
+            dbg!(take_simple_meas(&mut rob.comps_mut().y, &MEAS_DATA_Y, Factor::MAX)?);
+            dbg!(take_simple_meas(&mut rob.comps_mut().z, &MEAS_DATA_Z, Factor::MAX)?);
 
-            dbg!(rob.move_abs_j_sync(self.home, SpeedFactor::from(0.75))?);   
+            dbg!(rob.move_abs_j_sync(self.home, Factor::from(0.75))?);   
 
             Ok(())
         }

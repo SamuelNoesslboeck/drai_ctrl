@@ -1,23 +1,23 @@
-use rppal::gpio::{Gpio, InputPin};
+use rppal::gpio::{Gpio, InputPin, OutputPin};
 use syact::Setup;
-use syact::device::LED;
+use syact::device::{SoftwarePWM, LED};
 
 pub struct UserTerminal {
     switch_start : InputPin,
-    led_start : LED,
+    led_start : LED<SoftwarePWM<OutputPin>>,
 
     switch_halt : InputPin,
-    led_halt : LED,
+    led_halt : LED<SoftwarePWM<OutputPin>>,
 }
 
 impl UserTerminal {
     pub fn new(gpio : &Gpio, switch_start_pin : u8, led_start_pin : u8, switch_halt_pin : u8, led_halt_pin : u8) -> Result<Self, syact::Error> {
         Ok(Self {
             switch_start: gpio.get(switch_start_pin)?.into_input(),
-            led_start: LED::new(gpio.get(led_start_pin)?.into_output()),
+            led_start: LED::new(SoftwarePWM::new(gpio.get(led_start_pin)?.into_output())),
             
             switch_halt: gpio.get(switch_halt_pin)?.into_input(),
-            led_halt: LED::new(gpio.get(led_halt_pin)?.into_output())
+            led_halt: LED::new(SoftwarePWM::new(gpio.get(led_halt_pin)?.into_output()))
         })
     }
 
