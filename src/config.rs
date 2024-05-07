@@ -100,8 +100,8 @@ pub struct DrakeConfig {
 
 impl DrakeConfig {
     pub fn parse_from_file(path : &str) -> Result<Self, syact::Error> {
-        serde_json::from_str::<Self>(
+        Ok(serde_json::from_str::<Self>(
             std::fs::read_to_string(path)?.as_str()
-        )
+        )?)
     }
 }
