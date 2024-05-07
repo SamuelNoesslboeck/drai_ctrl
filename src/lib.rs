@@ -1,6 +1,5 @@
 use rppal::gpio::{Gpio, OutputPin};
 use rppal::i2c::I2c;
-use syact::act::StateActuator;
 use syact::meas::take_simple_meas;
 use syact::prelude::*;
 use sybot::prelude::*;
@@ -50,11 +49,9 @@ use crate::user_terminal::UserTerminal;
                 Stepper::new(GenericPWM::new(gpio.get(hw.x_step).unwrap().into_output(), gpio.get(hw.x_dir).unwrap().into_output()).unwrap(), StepperConst::MOT_17HE15_1504S)
                     .add_interruptor_inline(Box::new(
                         EndSwitch::new(false, Some(Direction::CW), gpio.get(hw.x_meas_pos)?.into_input())
-                            .setup_inline().unwrap()
                     ))
                     .add_interruptor_inline(Box::new(
                         EndSwitch::new(false, Some(Direction::CCW), gpio.get(hw.x_meas_neg)?.into_input())
-                            .setup_inline().unwrap()
                     ))
                 , config.ratio_x
             ),
@@ -62,7 +59,6 @@ use crate::user_terminal::UserTerminal;
                 Stepper::new(GenericPWM::new(gpio.get(hw.y_step).unwrap().into_output(), gpio.get(hw.y_dir).unwrap().into_output()).unwrap(), StepperConst::MOT_17HE15_1504S)
                     .add_interruptor_inline(Box::new(
                         EndSwitch::new(false, Some(Direction::CW), gpio.get(hw.y_meas_pos).unwrap().into_input())
-                            .setup_inline().unwrap()
                     ))
                 , config.ratio_y
             ),
@@ -70,7 +66,6 @@ use crate::user_terminal::UserTerminal;
                 Stepper::new(GenericPWM::new(gpio.get(hw.z_step).unwrap().into_output(), gpio.get(hw.z_dir).unwrap().into_output()).unwrap(), StepperConst::MOT_17HE15_1504S)
                     .add_interruptor_inline(Box::new(
                         EndSwitch::new(false, Some(Direction::CW), gpio.get(hw.z_meas_neg).unwrap().into_input())
-                            .setup_inline().unwrap()
                     ))
                 , config.ratio_z
             )
