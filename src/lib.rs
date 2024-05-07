@@ -99,9 +99,9 @@ use crate::user_terminal::UserTerminal;
 
                 home: config.home,
 
-                meas_data_x: config.meas_data_x,
-                meas_data_y: config.meas_data_y,
-                meas_data_z: config.meas_data_z
+                meas_data_x: config.meas_data_x.clone(),
+                meas_data_y: config.meas_data_y.clone(),
+                meas_data_z: config.meas_data_z.clone()
             })
         }
     }
@@ -116,7 +116,7 @@ use crate::user_terminal::UserTerminal;
     }
 
     impl Station<DrakeComponents, dyn StepperActuator, 2> for DrakeStation {
-        type Robot = DrakeRobott;
+        type Robot = DrakeRobot;
 
         fn home(&mut self, rob : &mut Self::Robot) -> Result<(), sybot::Error> {
             dbg!(take_simple_meas(&mut rob.comps_mut().x, &self.meas_data_x, Factor::MAX)?);
