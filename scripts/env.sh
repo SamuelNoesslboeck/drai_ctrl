@@ -5,8 +5,8 @@ echo "Setting environment variables ..."
 # Environment
 ## File-System
 export DRAI_CTRL_PATH="~/drai_ctrl"
-export DRAI_LOG_PATH="/logs"
-export DRAI_CONFIG_PATH="/config/drake.example.json"
+export DRAI_LOG_PATH="logs"
+export DRAI_CONFIG_PATH="config/drake.json"
 
 ## Networking
 export DRAI_CAMERA_PORT=40324
