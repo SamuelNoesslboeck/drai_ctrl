@@ -40,25 +40,25 @@ impl DrakeHardware {
             y_step: std::env::var("DRAI_Y_AXIS_STEP_PIN")?.parse()?,
             z_step: std::env::var("DRAI_Z_AXIS_STEP_PIN")?.parse()?,
 
-            x_dir: std::env::var("DRAI_X_AXIS_DIR_PIN")?.parse(),
-            y_dir: std::env::var("DRAI_Y_AXIS_DIR_PIN")?.parse(),
-            z_dir: std::env::var("DRAI_Z_AXIS_DIR_PIN")?.parse(),
+            x_dir: std::env::var("DRAI_X_AXIS_DIR_PIN")?.parse()?,
+            y_dir: std::env::var("DRAI_Y_AXIS_DIR_PIN")?.parse()?,
+            z_dir: std::env::var("DRAI_Z_AXIS_DIR_PIN")?.parse()?,
 
-            x_meas_pos: std::env::var("DRAI_X_SWITCH_POS_PIN")?.parse(),
-            x_meas_neg: std::env::var("DRAI_X_SWITCH_NEG_PIN")?.parse(),
+            x_meas_pos: std::env::var("DRAI_X_SWITCH_POS_PIN")?.parse()?,
+            x_meas_neg: std::env::var("DRAI_X_SWITCH_NEG_PIN")?.parse()?,
 
-            y_meas_pos: std::env::var("DRAI_Y_SWITCH_POS_PIN")?.parse(),
+            y_meas_pos: std::env::var("DRAI_Y_SWITCH_POS_PIN")?.parse()?,
 
-            z_meas_neg: std::env::var("DRAI_Z_SWITCH_NEG_PIN")?.parse(),
+            z_meas_neg: std::env::var("DRAI_Z_SWITCH_NEG_PIN")?.parse()?,
 
-            x_microsteps: std::env::var("DRAI_X_MICROSTEPS")?.parse(),
-            y_microsteps: std::env::var("DRAI_Y_MICROSTEPS")?.parse(),
-            z_microsteps: std::env::var("DRAI_Z_MICROSTEPS")?.parse(),
+            x_microsteps: std::env::var("DRAI_X_MICROSTEPS")?.parse()?,
+            y_microsteps: std::env::var("DRAI_Y_MICROSTEPS")?.parse()?,
+            z_microsteps: std::env::var("DRAI_Z_MICROSTEPS")?.parse()?,
             
-            ut_start_led: std::env::var("DRAI_UT_LED_START_PIN")?.parse(),
-            ut_start_switch: std::env::var("DRAI_UT_SWITCH_START_PIN")?.parse(),
-            ut_stop_led: std::env::var("DRAI_UT_LED_STOP_PIN")?.parse(),
-            ut_stop_switch: std::env::var("DRAI_UT_SWITCH_STOP_PIN")?.parse(),
+            ut_start_led: std::env::var("DRAI_UT_LED_START_PIN")?.parse()?,
+            ut_start_switch: std::env::var("DRAI_UT_SWITCH_START_PIN")?.parse()?,
+            ut_stop_led: std::env::var("DRAI_UT_LED_STOP_PIN")?.parse()?,
+            ut_stop_switch: std::env::var("DRAI_UT_SWITCH_STOP_PIN")?.parse()?,
         })
     }
 }

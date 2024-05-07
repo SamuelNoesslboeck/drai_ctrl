@@ -1,4 +1,4 @@
-use rppal::gpio::{Gpio, Pin};
+use rppal::gpio::{Gpio, OutputPin};
 use rppal::i2c::I2c;
 use syact::act::StateActuator;
 use syact::meas::take_simple_meas;
@@ -24,9 +24,9 @@ use crate::user_terminal::UserTerminal;
 // Robots
     #[derive(StepperActuatorGroup)]
     pub struct DrakeComponents {
-        pub x : LinearAxis<Stepper<Pin, Pin>>,
-        pub y : LinearAxis<Stepper<Pin, Pin>>,
-        pub z : LinearAxis<Stepper<Pin, Pin>>
+        pub x : LinearAxis<Stepper<OutputPin, OutputPin>>,
+        pub y : LinearAxis<Stepper<OutputPin, OutputPin>>,
+        pub z : LinearAxis<Stepper<OutputPin, OutputPin>>
     }
 
     pub type DrakeRobot = StepperRobot<DrakeComponents, &dyn StepperActuator, 2>;
