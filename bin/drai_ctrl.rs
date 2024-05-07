@@ -38,7 +38,7 @@ fn main() -> Result<(), syact::Error> {
 
     // RDS
         let mut rob = drake_robot_new(&hardware, &config, &gpio)?;
-        let mut stat = DrakeStation::new(i2c, &hardware, &config, &gpio);
+        let mut stat = DrakeStation::new(i2c, &hardware, &config, &gpio)?;
     // 
 
     // // Lines
@@ -55,7 +55,7 @@ fn main() -> Result<(), syact::Error> {
     stat.home(&mut rob).unwrap();
 
     // Wait until start has been pressed
-        let counter = 0;
+        let mut counter = 0;
 
         loop {
             if (counter % 20) == 0 {
