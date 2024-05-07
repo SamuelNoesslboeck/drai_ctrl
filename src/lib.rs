@@ -1,11 +1,12 @@
+use rppal::gpio::{Gpio, Pin};
 use rppal::i2c::I2c;
 use syact::act::StateActuator;
 use syact::prelude::*;
 use sybot::prelude::*;
 
 use syact::meas::take_simple_meas;
-use sybot::robs::stepper::{LinearXYStepperRobot, LinearXYStepperActuators};
 
+use crate::config::{DrakeConfig, DrakeHardware};
 use crate::servo_table::ServoTable;
 use crate::user_terminal::UserTerminal;
 
@@ -21,123 +22,58 @@ use crate::user_terminal::UserTerminal;
     pub mod user_terminal;
 // 
 
-// Constants & Statics
-    //lazy_static::lazy_static! {
-        // Pins
-            // Stepper
-                pub const DRAI_X_AXIS_STEP_PIN : u8 = 18;
-                pub const DRAI_Y_AXIS_STEP_PIN : u8 = 9;
-                pub const DRAI_Z_AXIS_STEP_PIN : u8 = 8;
-
-                pub const DRAI_X_AXIS_DIR_PIN : u8 = 17;
-                pub const DRAI_Y_AXIS_DIR_PIN : u8 = 10; 
-                pub const DRAI_Z_AXIS_DIR_PIN : u8 = 11;
-
-                pub const DRAI_X_SWITCH_POS_PIN : u8 = 12;
-                pub const DRAI_Y_SWITCH_POS_PIN : u8 = 23;
-                // pub const DRAI_Z_SWITCH_POS_PIN : u8 = env!("DRAI_Z_SWITCH_POS_PIN").parse::<u8>().unwrap();
-
-                pub const DRAI_X_SWITCH_NEG_PIN : u8 = 23;
-                // pub const DRAI_Y_SWITCH_NEG_PIN : u8 = env!("DRAI_Y_SWITCH_NEG_PIN").parse::<u8>().unwrap();
-                // pub const DRAI_Z_SWITCH_NEG_PIN : u8 = 0;
-            //
-
-            // User-Terminal
-                pub const DRAI_UT_SWITCH_START_PIN : u8 = 26;
-                pub const DRAI_UT_LED_START_PIN : u8 = 27;
-
-                pub const DRAI_UT_SWITCH_HALT_PIN : u8 = 21;
-                pub const DRAI_UT_LED_HALT_PIN : u8 = 13;
-            //
-        //
-
-        // Static-Config
-            pub const DRAI_X_MICROSTEPS : u8 = 1;
-            pub const DRAI_Y_MICROSTEPS : u8 = 1;
-            pub const DRAI_Z_MICROSTEPS : u8 = 1;
-        // 
-    // }
-
-    pub const OFFSET_X : Delta = Delta(-50.0);
-    pub const OFFSET_Y : Delta = Delta(-50.0);
-
-    pub const RATIO_X : f32 = 6.0;
-    pub const RATIO_Y : f32 = 6.0;
-    pub const RATIO_Z : f32 = 8.0 / core::f32::consts::PI / 2.0;
-
-    pub const MEAS_DATA_X : SimpleMeasData = SimpleMeasData {
-        set_gamma: Gamma(325.0),
-        max_dist: Delta(400.0),
-        meas_speed: unsafe { SpeedFactor::from_unchecked(0.4) },
-
-        add_samples: 0,
-        sample_dist: Some(Delta(20.0))
-    };
-
-    pub const MEAS_DATA_Y : SimpleMeasData = SimpleMeasData {
-        set_gamma: Gamma(230.0),
-        max_dist: Delta(800.0),
-        meas_speed: unsafe { SpeedFactor::from_unchecked(0.4) },
-
-        add_samples: 0,
-        sample_dist: Some(Delta(20.0))
-    };
-
-    // pub const LIMITS_MIN : [Gamma; 2] = [
-
-    // ]; 
-
-    // Positions
-    pub const HOME : [Phi; 2] = [
-        Phi(125.0),
-        Phi(75.0)
-    ];
-
-    pub const STATES_Z : [Gamma; 2] = [
-        Gamma::ZERO,
-        Gamma(5.0)
-    ]; 
-
-    pub const STATE_Z_DRAW : usize = 0;
-    pub const STATE_Z_LIFT : usize = 1;
-
-    // Load data    
-    pub const WEIGHT_AXES : [Inertia; 2] = [
-        Inertia(0.5),
-        Inertia(1.0)
-    ];
-    pub const WEIGHT_BED : Inertia = Inertia(2.0);  // 2kgs
-//
-
 // Robots
-    pub type DrakeRobot = LinearXYStepperRobot;
+    #[derive(StepperActuatorGroup)]
+    pub struct DrakeComponents {
+        pub x : LinearAxis<Stepper<Pin, Pin>>,
+        pub y : LinearAxis<Stepper<Pin, Pin>>,
+        pub z : LinearAxis<Stepper<Pin, Pin>>
+    }
 
-    pub fn drake_robot_new() -> DrakeRobot {
-        LinearXYStepperRobot::new([
+    pub type DrakeRobot = StepperRobot<DrakeComponents, &dyn StepperActuator, 2>;
+
+    pub fn drake_robot_new(hw : &DrakeHardware, config : &DrakeConfig, gpio : &Gpio) -> DrakeRobot {
+        DrakeRobot::new([
             AngleConfig {
-                offset: OFFSET_X,
+                offset: config.offset_x,
                 counter: false
             },
             AngleConfig {
-                offset: OFFSET_Y,
+                offset: config.offset_y,
+                counter: false
+            },
+            AngleConfig {
+                offset: config.offset_z,
                 counter: false
             }
-        ], LinearXYStepperActuators {
+        ], DrakeComponents {
             x: LinearAxis::new(
-                Stepper::new(GenericPWM::new(DRAI_X_AXIS_STEP_PIN, DRAI_X_AXIS_DIR_PIN).unwrap(), StepperConst::MOT_17HE15_1504S)
+                Stepper::new(GenericPWM::new(gpio.get(hw.x_step).unwrap().into_output(), gpio.get(hw.x_dir).unwrap().into_output()).unwrap(), StepperConst::MOT_17HE15_1504S)
                     .add_interruptor_inline(Box::new(
-                        EndSwitch::new(false, Some(Direction::CW), UniInPin::new(DRAI_X_SWITCH_POS_PIN))
+                        EndSwitch::new(false, Some(Direction::CW), gpio.get(hw.x_meas_pos)?.into_input())
                             .setup_inline().unwrap()
                     ))
-                , RATIO_X
+                    .add_interruptor_inline(Box::new(
+                        EndSwitch::new(false, Some(Direction::CCW), gpio.get(hw.x_meas_neg)?.into_input())
+                            .setup_inline().unwrap()
+                    ))
+                , config.ratio_x
             ),
             y: LinearAxis::new(
-                Stepper::new(GenericPWM::new(DRAI_Y_AXIS_STEP_PIN, DRAI_Y_AXIS_DIR_PIN).unwrap(), StepperConst::MOT_17HE15_1504S)
+                Stepper::new(GenericPWM::new(gpio.get(hw.y_step).unwrap().into_output(), gpio.get(hw.y_dir).unwrap().into_output()).unwrap(), StepperConst::MOT_17HE15_1504S)
                     .add_interruptor_inline(Box::new(
-                        EndSwitch::new(false, Some(Direction::CW), UniInPin::new(DRAI_Y_SWITCH_POS_PIN))
+                        EndSwitch::new(false, Some(Direction::CW), gpio.get(hw.y_meas_pos).unwrap().into_input())
                             .setup_inline().unwrap()
                     ))
-                , RATIO_Y
+                , config.ratio_y
+            ),
+            z: LinearAxis::new(
+                Stepper::new(GenericPWM::new(gpio.get(hw.z_step).unwrap().into_output(), gpio.get(hw.z_dir).unwrap().into_output()).unwrap(), StepperConst::MOT_17HE15_1504S)
+                    .add_interruptor_inline(Box::new(
+                        EndSwitch::new(false, Some(Direction::CW), gpio.get(hw.z_meas_neg).unwrap().into_input())
+                            .setup_inline().unwrap()
+                    ))
+                , config.ratio_z
             )
         }, Vec::new())
     }
@@ -145,74 +81,45 @@ use crate::user_terminal::UserTerminal;
 
 // Station
     pub struct DrakeStation { 
-        pub z_axis : StateActuator<LinearAxis<Stepper>, 2>,
-        
         pub servo_table : ServoTable,
-        pub user_terminal : UserTerminal
+        pub user_terminal : UserTerminal,
+
+        pub home : [Phi; 3]
     }
 
     impl DrakeStation {
-        pub fn new(i2c : I2c) -> Self {
+        pub fn new(i2c : I2c, hw : &DrakeHardware, config : &DrakeConfig) -> Self {
             Self {
-                z_axis: StateActuator::new(
-                    LinearAxis::new(
-                        Stepper::new(
-                            GenericPWM::new(DRAI_Z_AXIS_STEP_PIN, DRAI_Z_AXIS_DIR_PIN).unwrap(),
-                            StepperConst::MOT_17HE15_1504S
-                        ),
-                        RATIO_Z
-                    ),
-                    STATES_Z
-                ),
                 servo_table: ServoTable::new(i2c).unwrap(), // TODO: Find solution without unwrap
                 user_terminal: UserTerminal::new(
-                    DRAI_UT_SWITCH_START_PIN,
-                    DRAI_UT_LED_START_PIN,
-                    DRAI_UT_SWITCH_HALT_PIN,
-                    DRAI_UT_LED_HALT_PIN
-                )
+                    hw.ut_start_switch,
+                    hw.ut_start_led,
+                    hw.ut_stop_switch,
+                    hw.ut_stop_led
+                ),
+                home: config.home
             }
-        }
-
-        pub fn lift_pen(&mut self) -> Result<(), sybot::Error> {
-            self.z_axis.drive_to_state(STATE_Z_LIFT, SpeedFactor::MAX)
-        }
-
-        pub fn put_down_pen(&mut self) -> Result<(), sybot::Error> {
-            self.z_axis.drive_to_state(STATE_Z_DRAW, SpeedFactor::MAX)
-        }
-
-        pub fn reposition_pen(&mut self, rob : &mut LinearXYStepperRobot, new_pos : [Phi; 2]) -> Result<(), sybot::Error> {
-            self.lift_pen()?;
-            rob.move_abs_j(new_pos, SpeedFactor::MAX)?;
-            self.put_down_pen()
         }
     }
 
     impl Setup for DrakeStation {
         fn setup(&mut self) -> Result<(), syact::Error> {
-            self.z_axis.setup()?;
             self.servo_table.setup()?;
             self.user_terminal.setup()?;
-
-            // Set mircosteps
-                self.z_axis.set_microsteps(MicroSteps::from(DRAI_Z_MICROSTEPS));
-            // 
             
             Ok(())
         }
     }
 
-    impl Station<LinearXYStepperActuators, dyn StepperActuator, 2> for DrakeStation {
+    impl Station<DrakeComponents, dyn StepperActuator, 2> for DrakeStation {
         type Robot = LinearXYStepperRobot;
 
         fn home(&mut self, rob : &mut Self::Robot) -> Result<(), sybot::Error> {
-            self.lift_pen()?;
-
             dbg!(take_simple_meas(&mut rob.comps_mut().x, &MEAS_DATA_X, SpeedFactor::MAX)?);
             dbg!(take_simple_meas(&mut rob.comps_mut().y, &MEAS_DATA_Y, SpeedFactor::MAX)?);
+            dbg!(take_simple_meas(&mut rob.comps_mut().z, &MEAS_DATA_Z, SpeedFactor::MAX)?);
 
-            dbg!(rob.move_abs_j_sync(HOME, SpeedFactor::from(0.25))?);     // Changed speed factor: FIX #1
+            dbg!(rob.move_abs_j_sync(self.home, SpeedFactor::from(0.75))?);   
 
             Ok(())
         }

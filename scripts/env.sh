@@ -2,11 +2,13 @@
 
 echo "Setting environment variables ..."
 
-# General
-export DRAI_DIR="~/DrAI"
-export DRAI_LOG_DIR="/logs"
+# Environment
+## File-System
+export DRAI_CTRL_PATH="~/drai_ctrl"
+export DRAI_LOG_PATH="/logs"
+export DRAI_CONFIG_PATH="/config/drake.example.json"
 
-# Networking
+## Networking
 export DRAI_CAMERA_PORT=40324
 export DRAI_SERVER_PORT=40325
 
@@ -17,9 +19,9 @@ export DRAI_CTRL_PW_FILE="/key/drai-ctrl/password.key"
 export DRAI_SERVER_USER_FILE="/key/drai-server/username.key"
 export DRAI_SERVER_PW_FILE="/key/drai-server/password.key"
 
-# Controls
+# Hardware
 ## Stepper 
-export DRAI_STEPPER_VOLTAGE=24
+export DRAI_CTRL_VOLTAGE=24
 
 ### X-Axis
 export DRAI_X_AXIS_STEP_PIN=18

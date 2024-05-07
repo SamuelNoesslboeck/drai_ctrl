@@ -2,6 +2,7 @@ use core::time::Duration;
 use std::io::{stdout, stdin, Read, Write};
 
 use clap::{command, arg, value_parser};
+use drake::config::{DrakeConfig, DrakeEnvironment, DrakeHardware};
 use indicatif::ProgressBar;
 
 use syact::prelude::*;
@@ -9,13 +10,7 @@ use sybot::prelude::*;
 
 use drake::*;
 
-pub const DRAW_SPEED_DEFAULT : SpeedFactor = unsafe {
-    SpeedFactor::from_unchecked(0.25)
-};
-
 // Points
-    pub const PIXEL_PER_MM : f32 = 4.0;
-
     #[derive(Copy, Clone, serde::Serialize, serde::Deserialize)]
     pub struct Line {
         p1 : [f32; 2],
@@ -58,26 +53,32 @@ fn main() {
     // 
 
     // Cmd
-        let matches = command!() 
-            .about("Drawing robot system")
-            .arg(arg!([path] "Pin number of the step pin").value_parser(value_parser!(String)))
-            .arg(arg!([z_state] "The current state of the Z-Axis (Drawing 0, Lifted 1)").value_parser(value_parser!(usize)))
-            .get_matches();
+        // let matches = command!() 
+        //     .about("Drawing robot system")
+        //     .arg(arg!([path] "Pin number of the step pin").value_parser(value_parser!(String)))
+        //     .arg(arg!([z_state] "The current state of the Z-Axis (Drawing 0, Lifted 1)").value_parser(value_parser!(usize)))
+        //     .get_matches();
 
-        let path : String = matches.get_one::<String>("path").expect("A valid path has to be provided").clone();
-        let z_state : usize = *matches.get_one("z_state").expect("A valid Z-State has to be provided");
+        // let path : String = matches.get_one::<String>("path").expect("A valid path has to be provided").clone();
+        // let z_state : usize = *matches.get_one("z_state").expect("A valid Z-State has to be provided");
 
         let draw_speed = std::env::var("DRAW_SPEED").map(|s| s.parse::<SpeedFactor>().unwrap()).unwrap_or(DRAW_SPEED_DEFAULT);
     // 
 
+    // Hardware
+        let gpio = rppal::gpio::Gpio::new()?;
+        let i2c = rppal::i2c::I2c::new()?;
+    // 
+
+    // Config
+        let hardware = DrakeHardware::parse_from_env()?;
+        let environment = DrakeEnvironment::parse_from_env()?;
+        let config = DrakeConfig::parse_from_file(&environment.config_path)?;
+    // 
+
     // RDS
-        let mut rob = drake_robot_new();
-
-        // let desc = LinearXYDescriptor::new();
-
-        let mut stat = DrakeStation::new(
-            rppal::i2c::I2c::new()?
-        );
+        let mut rob = drake_robot_new(&hardware, &config, &gpio);
+        let mut stat = DrakeStation::new(i2c, &hardware, &config);
     // 
 
     // Lines
@@ -85,7 +86,7 @@ fn main() {
     // 
 
     // Init
-    rob.comps_mut().set_config(StepperConfig::new(12.0, None));
+    rob.comps_mut().set_config(StepperConfig::new(hardware.voltage, None));
     rob.comps_mut().apply_inertias(&WEIGHT_AXES);
     rob.setup().unwrap();
 

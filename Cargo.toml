@@ -24,15 +24,9 @@ indicatif = "0.17.7"
 serde = "1.0.193"
 serde_json = "1.0.108"
 
-# font-kit = "0.12.0"
-# raqote = "0.8.3"
-
-syact = { path = "../syact" }
-sybot = { path = "../sybot" }
 pwm-pca9685 = { version = "1.0.0", features = [ "std" ] }
-rppal = { version = "0.17.1", features = [ "hal" ], optional = true }
-lazy_static = "1.4.0"
+rppal = { version = "0.17.1", features = [ "hal" ] }
 
-[features]
-default = [ "rasp" ]
-rasp = [ "syact/rasp", "sybot/rasp", "dep:rppal" ]
+syact = "0.12.1-alpha"
+sybot = "0.9.0-alpha"
+syunit = "0.1.5"

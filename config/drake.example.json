@@ -1,0 +1,14 @@
+{
+    "home": [ 0.0, 0.0, 0.0 ],
+
+    "offset_x": 0.0,
+    "offset_y": 0.0,
+    "offset_z": 0.0,
+
+    "ratio_x": 8.0,
+    "ratio_y": 8.0,
+    "ratio_z": 1.273,
+
+    "pixel_per_mm": 4.0,
+    "drawing_speed_default": 1.0
+}
