@@ -92,6 +92,8 @@ pub struct DrakeConfig {
     pub ratio_y : f32,
     pub ratio_z : f32,
 
+    pub weights : [Inertia; 3],
+
     pub pixel_per_mm : f32,
     pub drawing_speed : f32
 }

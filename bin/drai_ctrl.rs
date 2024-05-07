@@ -2,13 +2,13 @@ use core::time::Duration;
 use std::io::{stdout, stdin, Read, Write};
 
 use clap::{command, arg, value_parser};
-use drake::config::{DrakeConfig, DrakeEnvironment, DrakeHardware};
 use indicatif::ProgressBar;
 
 use syact::prelude::*;
 use sybot::prelude::*;
 
-use drake::*;
+use drake::drake_robot_new;
+use drake::config::{DrakeConfig, DrakeEnvironment, DrakeHardware};
 
 // Points
     #[derive(Copy, Clone, serde::Serialize, serde::Deserialize)]
@@ -89,10 +89,6 @@ fn main() {
     rob.comps_mut().set_config(StepperConfig::new(hardware.voltage, None));
     rob.comps_mut().apply_inertias(&WEIGHT_AXES);
     rob.setup().unwrap();
-
-    stat.z_axis.set_state(z_state);
-    stat.z_axis.apply_inertia(WEIGHT_BED);
-    stat.z_axis.setup().unwrap();
 
     println!("Driving to home position ... ");
 

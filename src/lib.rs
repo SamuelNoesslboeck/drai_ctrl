@@ -1,10 +1,9 @@
 use rppal::gpio::{Gpio, Pin};
 use rppal::i2c::I2c;
 use syact::act::StateActuator;
+use syact::meas::take_simple_meas;
 use syact::prelude::*;
 use sybot::prelude::*;
-
-use syact::meas::take_simple_meas;
 
 use crate::config::{DrakeConfig, DrakeHardware};
 use crate::servo_table::ServoTable;
@@ -12,6 +11,8 @@ use crate::user_terminal::UserTerminal;
 
 // Submodules
     pub mod config;
+
+    pub mod drawing;
 
     pub mod robot;
 
