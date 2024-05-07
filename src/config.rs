@@ -1,7 +1,18 @@
+use core::str::FromStr;
+use std::ffi::OsStr;
+
 use serde::{Serialize, Deserialize};
 use syact::meas::SimpleMeasData;
 use syact::MicroSteps;
 use syunit::*;
+
+pub fn parse_env<F : FromStr, K : AsRef<OsStr>>(key : K) -> Result<F, syact::Error> {
+    std::env::var(key).map_err(|v| {
+        Err(format!("Failed to load from env! Var '{}' not found! Original error: {}", key, v).into())
+    })?.parse().map_err(|v| {
+        Err(format!("Failed to load from env! Var '{}' could not be parsed! Original error: {}", key, v).into())
+    })
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct DrakeHardware {
@@ -35,31 +46,31 @@ pub struct DrakeHardware {
 impl DrakeHardware {
     pub fn parse_from_env() -> Result<Self, syact::Error> {
         Ok(Self {
-            voltage: std::env::var("DRAI_CTRL_VOLTAGE")?.parse()?,
+            voltage: parse_env("DRAI_CTRL_VOLTAGE")?,
 
-            x_step: std::env::var("DRAI_X_AXIS_STEP_PIN")?.parse()?,
-            y_step: std::env::var("DRAI_Y_AXIS_STEP_PIN")?.parse()?,
-            z_step: std::env::var("DRAI_Z_AXIS_STEP_PIN")?.parse()?,
+            x_step: parse_env("DRAI_X_AXIS_STEP_PIN")?,
+            y_step: parse_env("DRAI_Y_AXIS_STEP_PIN")?,
+            z_step: parse_env("DRAI_Z_AXIS_STEP_PIN")?,
 
-            x_dir: std::env::var("DRAI_X_AXIS_DIR_PIN")?.parse()?,
-            y_dir: std::env::var("DRAI_Y_AXIS_DIR_PIN")?.parse()?,
-            z_dir: std::env::var("DRAI_Z_AXIS_DIR_PIN")?.parse()?,
+            x_dir: parse_env("DRAI_X_AXIS_DIR_PIN")?,
+            y_dir: parse_env("DRAI_Y_AXIS_DIR_PIN")?,
+            z_dir: parse_env("DRAI_Z_AXIS_DIR_PIN")?,
 
-            x_meas_pos: std::env::var("DRAI_X_SWITCH_POS_PIN")?.parse()?,
-            x_meas_neg: std::env::var("DRAI_X_SWITCH_NEG_PIN")?.parse()?,
+            x_meas_pos: parse_env("DRAI_X_SWITCH_POS_PIN")?,
+            x_meas_neg: parse_env("DRAI_X_SWITCH_NEG_PIN")?,
 
-            y_meas_pos: std::env::var("DRAI_Y_SWITCH_POS_PIN")?.parse()?,
+            y_meas_pos: parse_env("DRAI_Y_SWITCH_POS_PIN")?,
 
-            z_meas_neg: std::env::var("DRAI_Z_SWITCH_NEG_PIN")?.parse()?,
+            z_meas_neg: parse_env("DRAI_Z_SWITCH_NEG_PIN")?,
 
-            x_microsteps: std::env::var("DRAI_X_MICROSTEPS")?.parse()?,
-            y_microsteps: std::env::var("DRAI_Y_MICROSTEPS")?.parse()?,
-            z_microsteps: std::env::var("DRAI_Z_MICROSTEPS")?.parse()?,
+            x_microsteps: parse_env("DRAI_X_MICROSTEPS")?,
+            y_microsteps: parse_env("DRAI_Y_MICROSTEPS")?,
+            z_microsteps: parse_env("DRAI_Z_MICROSTEPS")?,
             
-            ut_start_led: std::env::var("DRAI_UT_LED_START_PIN")?.parse()?,
-            ut_start_switch: std::env::var("DRAI_UT_SWITCH_START_PIN")?.parse()?,
-            ut_stop_led: std::env::var("DRAI_UT_LED_STOP_PIN")?.parse()?,
-            ut_stop_switch: std::env::var("DRAI_UT_SWITCH_STOP_PIN")?.parse()?,
+            ut_start_led: parse_env("DRAI_UT_LED_START_PIN")?,
+            ut_start_switch: parse_env("DRAI_UT_SWITCH_START_PIN")?,
+            ut_stop_led: parse_env("DRAI_UT_LED_STOP_PIN")?,
+            ut_stop_switch: parse_env("DRAI_UT_SWITCH_STOP_PIN")?,
         })
     }
 }
@@ -74,9 +85,9 @@ pub struct DrakeEnvironment {
 impl DrakeEnvironment {
     pub fn parse_from_env() -> Result<Self, syact::Error> {
         Ok(Self {
-            ctrl_dir: std::env::var("DRAI_CTRL_PATH")?,
-            log_path: std::env::var("DRAI_LOG_PATH")?,
-            config_path: std::env::var("DRAI_CONFIG_PATH")?
+            ctrl_dir: parse_env("DRAI_CTRL_PATH")?,
+            log_path: parse_env("DRAI_LOG_PATH")?,
+            config_path: parse_env("DRAI_CONFIG_PATH")?
         })
     }
 }
