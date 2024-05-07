@@ -8,9 +8,9 @@ use syunit::*;
 
 pub fn parse_env<F : FromStr, K : AsRef<OsStr>>(key : K) -> Result<F, syact::Error> {
     Ok(std::env::var(key).map_err(|v| {
-        format!("Failed to load from env! Var '{}' not found! Original error: {}", key, v)
+        format!("Failed to load from env! Var '{}' not found! Original error: {}", key.as_ref(), v)
     })?.parse().map_err(|v| {
-        format!("Failed to load from env! Var '{}' could not be parsed! Original error: {}", key, v)
+        format!("Failed to load from env! Var '{}' could not be parsed! Original error: {}", key.as_ref(), v)
     })?)
 }
 
