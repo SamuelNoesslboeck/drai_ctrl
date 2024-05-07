@@ -1,4 +1,5 @@
 use serde::{Serialize, Deserialize};
+use syact::meas::SimpleMeasData;
 use syact::MicroSteps;
 use syunit::*;
 
@@ -93,6 +94,10 @@ pub struct DrakeConfig {
     pub ratio_z : f32,
 
     pub weights : [Inertia; 3],
+
+    pub meas_data_x : SimpleMeasData,
+    pub meas_data_y : SimpleMeasData,
+    pub meas_data_z : SimpleMeasData,
 
     pub pixel_per_mm : f32,
     pub drawing_speed : f32

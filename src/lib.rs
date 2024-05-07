@@ -28,7 +28,7 @@ use crate::user_terminal::UserTerminal;
         pub z : LinearAxis<Stepper<OutputPin, OutputPin>>
     }
 
-    pub type DrakeRobot = StepperRobot<DrakeComponents, &dyn StepperActuator, 2>;
+    pub type DrakeRobot = StepperRobot<DrakeComponents, dyn StepperActuator, 2>;
 
     pub fn drake_robot_new(hw : &DrakeHardware, config : &DrakeConfig, gpio : &Gpio) -> DrakeRobot {
         DrakeRobot::new([
@@ -78,7 +78,11 @@ use crate::user_terminal::UserTerminal;
         pub servo_table : ServoTable,
         pub user_terminal : UserTerminal,
 
-        pub home : [Phi; 3]
+        pub home : [Phi; 3],
+
+        pub meas_data_x : SimpleMeasData,
+        pub meas_data_y : SimpleMeasData,
+        pub meas_data_z : SimpleMeasData
     }
 
     impl DrakeStation {
@@ -92,7 +96,12 @@ use crate::user_terminal::UserTerminal;
                     hw.ut_stop_switch,
                     hw.ut_stop_led
                 )?,
-                home: config.home
+
+                home: config.home,
+
+                meas_data_x: config.meas_data_x,
+                meas_data_y: config.meas_data_y,
+                meas_data_z: config.meas_data_z
             })
         }
     }
@@ -107,12 +116,12 @@ use crate::user_terminal::UserTerminal;
     }
 
     impl Station<DrakeComponents, dyn StepperActuator, 2> for DrakeStation {
-        type Robot = LinearXYStepperRobot;
+        type Robot = DrakeRobott;
 
         fn home(&mut self, rob : &mut Self::Robot) -> Result<(), sybot::Error> {
-            dbg!(take_simple_meas(&mut rob.comps_mut().x, &MEAS_DATA_X, Factor::MAX)?);
-            dbg!(take_simple_meas(&mut rob.comps_mut().y, &MEAS_DATA_Y, Factor::MAX)?);
-            dbg!(take_simple_meas(&mut rob.comps_mut().z, &MEAS_DATA_Z, Factor::MAX)?);
+            dbg!(take_simple_meas(&mut rob.comps_mut().x, &self.meas_data_x, Factor::MAX)?);
+            dbg!(take_simple_meas(&mut rob.comps_mut().y, &self.meas_data_y, Factor::MAX)?);
+            dbg!(take_simple_meas(&mut rob.comps_mut().z, &self.meas_data_z, Factor::MAX)?);
 
             dbg!(rob.move_abs_j_sync(self.home, Factor::new(0.75))?);   
 
