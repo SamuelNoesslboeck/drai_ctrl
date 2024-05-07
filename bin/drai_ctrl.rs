@@ -75,35 +75,35 @@ fn main() -> Result<(), syact::Error> {
 
     println!("Starting to draw ... ");
 
-    let pb = ProgressBar::new(lines.contour.len() as u64);
+    // let pb = ProgressBar::new(lines.contour.len() as u64);
 
-    // Safe to use
-    let mut last_point = unsafe { core::mem::zeroed() };
+    // // Safe to use
+    // let mut last_point = unsafe { core::mem::zeroed() };
     
 
-    if let Some(&init_line) = lines.contour.first() {
-        let [ p1, _ ] = convert_line(init_line);
-        stat.reposition_pen(&mut rob, p1).unwrap();   
-        last_point = p1;
-    }
+    // if let Some(&init_line) = lines.contour.first() {
+    //     let [ p1, _ ] = convert_line(init_line);
+    //     stat.reposition_pen(&mut rob, p1).unwrap();   
+    //     last_point = p1;
+    // }
 
-    for line in lines.contour {
-        let [ p1, p2 ] = convert_line(line);
+    // for line in lines.contour {
+    //     let [ p1, p2 ] = convert_line(line);
 
-        if p1 != last_point {
-            stat.reposition_pen(&mut rob, p1).unwrap();
-        }
+    //     if p1 != last_point {
+    //         stat.reposition_pen(&mut rob, p1).unwrap();
+    //     }
 
-        log::debug!("Driving to {:?}", p2);
-        rob.move_abs_j(p2, draw_speed).unwrap();
-        rob.await_inactive().unwrap();
+    //     log::debug!("Driving to {:?}", p2);
+    //     rob.move_abs_j(p2, draw_speed).unwrap();
+    //     rob.await_inactive().unwrap();
         
-        last_point = p2;
+    //     last_point = p2;
 
-        pb.inc(1);
-    }
+    //     pb.inc(1);
+    // }
 
-    pb.finish_with_message("done");
+    // pb.finish_with_message("done");
 
     stat.home(&mut rob).unwrap();
 
