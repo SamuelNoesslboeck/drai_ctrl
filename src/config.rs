@@ -6,10 +6,10 @@ use syact::meas::SimpleMeasData;
 use syact::MicroSteps;
 use syunit::*;
 
-pub fn parse_env<F : FromStr, K : AsRef<OsStr> + std::fmt::Display>(key : K) -> Result<F, syact::Error> {
+pub fn parse_env<F : FromStr>(key : &str) -> Result<F, syact::Error> {
     Ok(std::env::var(key).map_err(|v| {
         format!("Failed to load from env! Var '{}' not found! Original error: {}", key, v)
-    })?.parse().map_err(|v| {
+    })?.parse().map_err(|_| {
         format!("Failed to load from env! Var '{}' could not be parsed!", key)
     })?)
 }
