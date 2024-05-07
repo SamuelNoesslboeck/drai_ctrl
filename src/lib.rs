@@ -87,18 +87,18 @@ use crate::user_terminal::UserTerminal;
     }
 
     impl DrakeStation {
-        pub fn new(i2c : I2c, hw : &DrakeHardware, config : &DrakeConfig, gpio : &Gpio) -> Self {
-            Self {
-                servo_table: ServoTable::new(i2c).unwrap(), // TODO: Find solution without unwrap
+        pub fn new(i2c : I2c, hw : &DrakeHardware, config : &DrakeConfig, gpio : &Gpio) -> Result<Self, syact::Error> {
+            Ok(Self {
+                servo_table: ServoTable::new(i2c)?, 
                 user_terminal: UserTerminal::new(
                     gpio,
                     hw.ut_start_switch,
                     hw.ut_start_led,
                     hw.ut_stop_switch,
                     hw.ut_stop_led
-                ),
+                )?,
                 home: config.home
-            }
+            })
         }
     }
 
@@ -119,7 +119,7 @@ use crate::user_terminal::UserTerminal;
             dbg!(take_simple_meas(&mut rob.comps_mut().y, &MEAS_DATA_Y, Factor::MAX)?);
             dbg!(take_simple_meas(&mut rob.comps_mut().z, &MEAS_DATA_Z, Factor::MAX)?);
 
-            dbg!(rob.move_abs_j_sync(self.home, Factor::from(0.75))?);   
+            dbg!(rob.move_abs_j_sync(self.home, Factor::new(0.75))?);   
 
             Ok(())
         }

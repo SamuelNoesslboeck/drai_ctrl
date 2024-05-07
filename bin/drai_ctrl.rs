@@ -47,22 +47,9 @@ use drake::config::{DrakeConfig, DrakeEnvironment, DrakeHardware};
     }
 // 
 
-fn main() {
+fn main() -> Result<(), syact::Error> {
     // Init logging
         env_logger::init();
-    // 
-
-    // Cmd
-        // let matches = command!() 
-        //     .about("Drawing robot system")
-        //     .arg(arg!([path] "Pin number of the step pin").value_parser(value_parser!(String)))
-        //     .arg(arg!([z_state] "The current state of the Z-Axis (Drawing 0, Lifted 1)").value_parser(value_parser!(usize)))
-        //     .get_matches();
-
-        // let path : String = matches.get_one::<String>("path").expect("A valid path has to be provided").clone();
-        // let z_state : usize = *matches.get_one("z_state").expect("A valid Z-State has to be provided");
-
-        let draw_speed = std::env::var("DRAW_SPEED").map(|s| s.parse::<Factor>().unwrap()).unwrap_or(DRAW_SPEED_DEFAULT);
     // 
 
     // Hardware
@@ -146,4 +133,6 @@ fn main() {
     pb.finish_with_message("done");
 
     stat.home(&mut rob).unwrap();
+
+    Ok(())
 }
