@@ -28,7 +28,7 @@ use crate::user_terminal::UserTerminal;
         pub z : LinearAxis<Stepper<OutputPin, OutputPin>>
     }
 
-    pub type DrakeRobot = StepperRobot<DrakeComponents, dyn StepperActuator, 2>;
+    pub type DrakeRobot = StepperRobot<DrakeComponents, dyn StepperActuator, 3>;
 
     pub fn drake_robot_new(hw : &DrakeHardware, config : &DrakeConfig, gpio : &Gpio) -> DrakeRobot {
         DrakeRobot::new([
@@ -115,7 +115,7 @@ use crate::user_terminal::UserTerminal;
         }
     }
 
-    impl Station<DrakeComponents, dyn StepperActuator, 2> for DrakeStation {
+    impl Station<DrakeComponents, dyn StepperActuator, 3> for DrakeStation {
         type Robot = DrakeRobot;
 
         fn home(&mut self, rob : &mut Self::Robot) -> Result<(), sybot::Error> {
