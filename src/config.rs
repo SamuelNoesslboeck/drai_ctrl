@@ -1,5 +1,4 @@
 use core::str::FromStr;
-use std::ffi::OsStr;
 
 use serde::{Serialize, Deserialize};
 use syact::meas::SimpleMeasData;
@@ -39,8 +38,8 @@ pub struct DrakeHardware {
 
     pub ut_start_led : u8,
     pub ut_start_switch : u8,
-    pub ut_stop_led : u8,
-    pub ut_stop_switch : u8
+    pub ut_halt_led : u8,
+    pub ut_halt_switch : u8
 }
 
 impl DrakeHardware {
@@ -69,8 +68,8 @@ impl DrakeHardware {
             
             ut_start_led: parse_env("DRAI_UT_LED_START_PIN")?,
             ut_start_switch: parse_env("DRAI_UT_SWITCH_START_PIN")?,
-            ut_stop_led: parse_env("DRAI_UT_LED_STOP_PIN")?,
-            ut_stop_switch: parse_env("DRAI_UT_SWITCH_STOP_PIN")?,
+            ut_halt_led: parse_env("DRAI_UT_LED_HALT_PIN")?,
+            ut_halt_switch: parse_env("DRAI_UT_SWITCH_HALT_PIN")?,
         })
     }
 }

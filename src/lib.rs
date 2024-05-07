@@ -93,8 +93,8 @@ use crate::user_terminal::UserTerminal;
                     gpio,
                     hw.ut_start_switch,
                     hw.ut_start_led,
-                    hw.ut_stop_switch,
-                    hw.ut_stop_led
+                    hw.ut_halt_switch,
+                    hw.ut_halt_led
                 )?,
 
                 home: config.home,
