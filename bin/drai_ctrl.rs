@@ -10,33 +10,6 @@ use sybot::prelude::*;
 use drake::drake_robot_new;
 use drake::config::{DrakeConfig, DrakeEnvironment, DrakeHardware};
 
-// Points
-    #[derive(Copy, Clone, serde::Serialize, serde::Deserialize)]
-    pub struct Line {
-        p1 : [f32; 2],
-        p2 : [f32; 2]
-    }
-
-    #[derive(serde::Serialize, serde::Deserialize)]
-    pub struct LinesFile {
-        contour : Vec<Line>
-    }
-
-    pub fn load_points(path : &str) -> LinesFile {
-        serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap()
-    }
-
-    pub fn convert_pixel(pixel : f32) -> Phi {
-        Phi(pixel / PIXEL_PER_MM)
-    }
-
-    pub fn convert_line(line : Line) -> [[Phi; 2]; 2] {
-        [
-            [ convert_pixel(line.p1[0]), convert_pixel(line.p1[1]) ],
-            [ convert_pixel(line.p2[0]), convert_pixel(line.p2[1]) ]
-        ]
-    }
-// 
 
 // Process
     fn pause() {
@@ -68,9 +41,9 @@ fn main() -> Result<(), syact::Error> {
         let mut stat = DrakeStation::new(i2c, &hardware, &config, &gpio);
     // 
 
-    // Lines
-        let lines = load_points(path.as_str());
-    // 
+    // // Lines
+    //     let lines = load_points(path.as_str());
+    // // 
 
     // Init
     rob.comps_mut().set_config(StepperConfig::new(hardware.voltage, None));
