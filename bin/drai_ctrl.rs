@@ -25,9 +25,20 @@ fn main() -> Result<(), syact::Error> {
         env_logger::init();
     // 
 
+    // Header
+        println!("#############");
+        println!("# DRAI-CTRL #");
+        println!("#############");
+    // 
+
     // Hardware
+        print!(" -> Loading GPIO ... ");
         let gpio = rppal::gpio::Gpio::new().unwrap();
+        println!(" done!");
+
+        print!(" -> Loading I2C ... ");
         let i2c = rppal::i2c::I2c::new().unwrap();
+        print!(" done!");
     // 
 
     // Config
