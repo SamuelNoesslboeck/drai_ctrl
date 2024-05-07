@@ -26,19 +26,19 @@ fn main() -> Result<(), syact::Error> {
     // 
 
     // Hardware
-        let gpio = rppal::gpio::Gpio::new()?;
-        let i2c = rppal::i2c::I2c::new()?;
+        let gpio = rppal::gpio::Gpio::new().unwrap();
+        let i2c = rppal::i2c::I2c::new().unwrap();
     // 
 
     // Config
-        let hardware = DrakeHardware::parse_from_env()?;
-        let environment = DrakeEnvironment::parse_from_env()?;
-        let config = DrakeConfig::parse_from_file(&environment.config_path)?;
+        let hardware = DrakeHardware::parse_from_env().unwrap();
+        let environment = DrakeEnvironment::parse_from_env().unwrap();
+        let config = DrakeConfig::parse_from_file(&environment.config_path).unwrap();
     // 
 
     // RDS
-        let mut rob = drake_robot_new(&hardware, &config, &gpio)?;
-        let mut stat = DrakeStation::new(i2c, &hardware, &config, &gpio)?;
+        let mut rob = drake_robot_new(&hardware, &config, &gpio).unwrap();
+        let mut stat = DrakeStation::new(i2c, &hardware, &config, &gpio).unwrap();
     // 
 
     // // Lines
@@ -94,7 +94,7 @@ fn main() -> Result<(), syact::Error> {
     //         stat.reposition_pen(&mut rob, p1).unwrap();
     //     }
 
-    //     log::debug!("Driving to {:?}", p2);
+    //     log::debug!("Driving to {:.unwrap()}", p2);
     //     rob.move_abs_j(p2, draw_speed).unwrap();
     //     rob.await_inactive().unwrap();
         
