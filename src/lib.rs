@@ -30,8 +30,8 @@ use crate::user_terminal::UserTerminal;
 
     pub type DrakeRobot = StepperRobot<DrakeComponents, dyn StepperActuator, 3>;
 
-    pub fn drake_robot_new(hw : &DrakeHardware, config : &DrakeConfig, gpio : &Gpio) -> DrakeRobot {
-        DrakeRobot::new([
+    pub fn drake_robot_new(hw : &DrakeHardware, config : &DrakeConfig, gpio : &Gpio) -> Result<DrakeRobot, syact::Error> {
+        Ok(DrakeRobot::new([
             AngleConfig {
                 offset: config.offset_x,
                 counter: false
@@ -46,7 +46,7 @@ use crate::user_terminal::UserTerminal;
             }
         ], DrakeComponents {
             x: LinearAxis::new(
-                Stepper::new(GenericPWM::new(gpio.get(hw.x_step).unwrap().into_output(), gpio.get(hw.x_dir).unwrap().into_output()).unwrap(), StepperConst::MOT_17HE15_1504S)
+                Stepper::new(GenericPWM::new(gpio.get(hw.x_step)?.into_output(), gpio.get(hw.x_dir).unwrap().into_output()).unwrap(), StepperConst::MOT_17HE15_1504S)
                     .add_interruptor_inline(Box::new(
                         EndSwitch::new(false, Some(Direction::CW), gpio.get(hw.x_meas_pos)?.into_input())
                     ))
@@ -69,7 +69,7 @@ use crate::user_terminal::UserTerminal;
                     ))
                 , config.ratio_z
             )
-        }, Vec::new())
+        }, Vec::new()))
     }
 // 
 
