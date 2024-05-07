@@ -7,7 +7,7 @@ use indicatif::ProgressBar;
 use syact::prelude::*;
 use sybot::prelude::*;
 
-use drake::drake_robot_new;
+use drake::{drake_robot_new, DrakeStation};
 use drake::config::{DrakeConfig, DrakeEnvironment, DrakeHardware};
 
 
@@ -47,7 +47,7 @@ fn main() -> Result<(), syact::Error> {
 
     // Init
     rob.comps_mut().set_config(StepperConfig::new(hardware.voltage, None));
-    rob.comps_mut().apply_inertias(&WEIGHT_AXES);
+    rob.comps_mut().apply_inertias(&config.weights);
     rob.setup().unwrap();
 
     println!("Driving to home position ... ");
@@ -58,13 +58,13 @@ fn main() -> Result<(), syact::Error> {
         let counter = 0;
 
         loop {
-            if (counter % 20) {
+            if (counter % 20) == 0 {
                 stat.user_terminal.set_start_led(
                     !stat.user_terminal.is_halt_led_on()
                 )
             }
 
-            if (stat.user_terminal.check_start()) {
+            if stat.user_terminal.check_start() {
                 break;
             }
 
