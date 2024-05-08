@@ -17,7 +17,7 @@ name = "drake_table_test"
 path = "bin/drake_table_test.rs"
 
 [dependencies]
-clap = "4.4.11"
+clap = { version = "4.4.11", features = [ "cargo" ] }
 env_logger = "0.11.3"
 log = "0.4.20"
 indicatif = "0.17.7"
@@ -30,3 +30,4 @@ rppal = { version = "0.17.1", features = [ "embedded-hal" ] }
 syact = "0.12.1-alpha"
 sybot = "0.9.0-alpha"
 syunit = "0.1.5"
+embedded-hal = "1.0.0"

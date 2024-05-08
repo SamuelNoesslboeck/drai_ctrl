@@ -1,3 +1,4 @@
+use embedded_hal::pwm::ErrorKind;
 use rppal::gpio::{Gpio, InputPin, OutputPin};
 use syact::Setup;
 use syact::device::{SoftwarePWM, LED};
@@ -43,16 +44,16 @@ impl UserTerminal {
             self.led_start.is_on()
         }
 
-        pub fn set_start_led(&mut self, value : bool) {
-            self.led_start.set(value);
+        pub fn set_start_led(&mut self, value : bool) -> Result<(), ErrorKind> {
+            self.led_start.set(value)
         }
 
         pub fn is_halt_led_on(&self) -> bool {
             self.led_halt.is_on()
         }
 
-        pub fn set_halt_led(&mut self, value : bool) {
-            self.led_halt.set(value);
+        pub fn set_halt_led(&mut self, value : bool) -> Result<(), ErrorKind> {
+            self.led_halt.set(value)
         }
     // 
 }

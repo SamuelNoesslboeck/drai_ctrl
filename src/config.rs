@@ -110,7 +110,7 @@ pub struct DrakeConfig {
     pub meas_data_z : SimpleMeasData,
 
     pub pixel_per_mm : f32,
-    pub drawing_speed : f32
+    pub drawing_speed_default : f32
 }
 
 impl DrakeConfig {

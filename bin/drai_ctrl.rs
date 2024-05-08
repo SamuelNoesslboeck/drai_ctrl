@@ -1,8 +1,5 @@
 use core::time::Duration;
-use std::io::{stdout, stdin, Read, Write};
-
-use clap::{command, arg, value_parser};
-use indicatif::ProgressBar;
+/* use std::io::{stdout, stdin, Read, Write}; */
 
 use syact::prelude::*;
 use sybot::prelude::*;
@@ -12,12 +9,13 @@ use drake::config::{DrakeConfig, DrakeEnvironment, DrakeHardware};
 
 
 // Process
+    /* 
     fn pause() {
         let mut stdout = stdout();
         stdout.write(b"Press Enter to continue...").unwrap();
         stdout.flush().unwrap();
         stdin().read(&mut [0]).unwrap();
-    }
+    } */
 // 
 
 fn main() -> Result<(), syact::Error> {
@@ -31,20 +29,28 @@ fn main() -> Result<(), syact::Error> {
         println!("#############");
     // 
 
+    // Config
+        print!(" -> Loading hardware from variables ... ");
+        let hardware = DrakeHardware::parse_from_env().unwrap();
+        println!("done!");
+
+        print!(" -> Loading environment from variables ... ");
+        let environment = DrakeEnvironment::parse_from_env().unwrap();
+        println!("done!");
+
+        print!(" -> Loading config at path '{}' ... ", &environment.config_path); 
+        let config = DrakeConfig::parse_from_file(&environment.config_path).unwrap();
+        println!("done!");
+    // 
+
     // Hardware
         print!(" -> Loading GPIO ... ");
         let gpio = rppal::gpio::Gpio::new().unwrap();
-        println!(" done!");
+        println!("done!");
 
         print!(" -> Loading I2C ... ");
         let i2c = rppal::i2c::I2c::new().unwrap();
-        print!(" done!");
-    // 
-
-    // Config
-        let hardware = DrakeHardware::parse_from_env().unwrap();
-        let environment = DrakeEnvironment::parse_from_env().unwrap();
-        let config = DrakeConfig::parse_from_file(&environment.config_path).unwrap();
+        print!("done!");
     // 
 
     // RDS
@@ -72,7 +78,7 @@ fn main() -> Result<(), syact::Error> {
             if (counter % 20) == 0 {
                 stat.user_terminal.set_start_led(
                     !stat.user_terminal.is_halt_led_on()
-                )
+                ).unwrap();
             }
 
             if stat.user_terminal.check_start() {
