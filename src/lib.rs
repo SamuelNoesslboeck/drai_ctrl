@@ -71,7 +71,7 @@ use crate::user_terminal::UserTerminal;
             z: LinearAxis::new(
                 Stepper::new(GenericPWM::new(gpio.get(hw.z_step).unwrap().into_output(), gpio.get(hw.z_dir).unwrap().into_output()).unwrap(), StepperConst::MOT_17HE15_1504S)
                     .add_interruptor_inline(Box::new(
-                        EndSwitch::new(false, Some(Direction::CW), gpio.get(hw.z_meas_neg).unwrap().into_input())
+                        EndSwitch::new(false, Some(Direction::CCW), gpio.get(hw.z_meas_neg).unwrap().into_input())
                     ))
                 , config.ratio_z
             )
