@@ -16,13 +16,13 @@ impl UserTerminal {
         Ok(Self {
             switch_start: gpio.get(switch_start_pin)?.into_input(),
             led_start: LED::new(
-                SoftwarePWM::new(gpio.get(led_start_pin)?.into_output())
+                SoftwarePWM::new(gpio.get(led_start_pin)?.into_output_low())
                     .setup_inline()?
             ),
             
             switch_halt: gpio.get(switch_halt_pin)?.into_input(),
             led_halt: LED::new(
-                SoftwarePWM::new(gpio.get(led_halt_pin)?.into_output())
+                SoftwarePWM::new(gpio.get(led_halt_pin)?.into_output_low())
                     .setup_inline()?
             )
         })

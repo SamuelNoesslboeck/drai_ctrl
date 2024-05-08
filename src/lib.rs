@@ -46,7 +46,13 @@ use crate::user_terminal::UserTerminal;
             }
         ], DrakeComponents {
             x: LinearAxis::new(
-                Stepper::new(GenericPWM::new(gpio.get(hw.x_step)?.into_output(), gpio.get(hw.x_dir).unwrap().into_output()).unwrap(), StepperConst::MOT_17HE15_1504S)
+                Stepper::new(
+                        GenericPWM::new(
+                            gpio.get(hw.x_step)?.into_output(), 
+                            gpio.get(hw.x_dir)?.into_output()
+                        )?, 
+                        StepperConst::MOT_17HE15_1504S
+                    )
                     .add_interruptor_inline(Box::new(
                         EndSwitch::new(false, Some(Direction::CW), gpio.get(hw.x_meas_pos)?.into_input())
                     ))
