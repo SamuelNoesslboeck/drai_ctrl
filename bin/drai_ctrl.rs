@@ -67,8 +67,29 @@ fn main() -> Result<(), syact::Error> {
     rob.comps_mut().apply_inertias(&config.weights);
     rob.setup().unwrap();
 
-    println!("Driving to home position ... ");
+    print!("Waiting for user input ... ");
 
+    // Wait until start has been pressed
+        let mut counter = 0;
+
+        loop {
+            if (counter % 20) == 0 {
+                stat.user_terminal.set_start_led(
+                    !stat.user_terminal.is_halt_led_on()
+                ).unwrap();
+            }
+
+            if stat.user_terminal.check_start() {
+                println!("pressed!");
+                break;
+            }
+
+            std::thread::sleep(Duration::from_millis(25));
+            counter += 1;
+        }
+    // 
+
+    println!("Driving to home position ... ");
     stat.home(&mut rob).unwrap();
 
     // Wait until start has been pressed
