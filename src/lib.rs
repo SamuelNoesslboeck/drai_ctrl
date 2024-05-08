@@ -75,7 +75,7 @@ use crate::user_terminal::UserTerminal;
 
 // Station
     pub struct DrakeStation { 
-        pub servo_table : ServoTable,
+        // pub servo_table : ServoTable,
         pub user_terminal : UserTerminal,
 
         pub home : [Phi; 3],
@@ -86,9 +86,9 @@ use crate::user_terminal::UserTerminal;
     }
 
     impl DrakeStation {
-        pub fn new(i2c : I2c, hw : &DrakeHardware, config : &DrakeConfig, gpio : &Gpio) -> Result<Self, syact::Error> {
+        pub fn new(hw : &DrakeHardware, config : &DrakeConfig, gpio : &Gpio) -> Result<Self, syact::Error> {
             Ok(Self {
-                servo_table: ServoTable::new(i2c)?, 
+                // servo_table: ServoTable::new(i2c)?, 
                 user_terminal: UserTerminal::new(
                     gpio,
                     hw.ut_start_switch,
@@ -108,7 +108,7 @@ use crate::user_terminal::UserTerminal;
 
     impl Setup for DrakeStation {
         fn setup(&mut self) -> Result<(), syact::Error> {
-            self.servo_table.setup()?;
+            // self.servo_table.setup()?;
             self.user_terminal.setup()?;
             
             Ok(())

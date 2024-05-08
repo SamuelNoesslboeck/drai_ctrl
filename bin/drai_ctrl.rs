@@ -48,14 +48,15 @@ fn main() -> Result<(), syact::Error> {
         let gpio = rppal::gpio::Gpio::new().unwrap();
         println!("done!");
 
+        /* 
         print!(" -> Loading I2C ... ");
         let i2c = rppal::i2c::I2c::new().unwrap();
-        print!("done!");
+        println!("done!"); */
     // 
 
     // RDS
         let mut rob = drake_robot_new(&hardware, &config, &gpio).unwrap();
-        let mut stat = DrakeStation::new(i2c, &hardware, &config, &gpio).unwrap();
+        let mut stat = DrakeStation::new(&hardware, &config, &gpio).unwrap();
     // 
 
     // // Lines
