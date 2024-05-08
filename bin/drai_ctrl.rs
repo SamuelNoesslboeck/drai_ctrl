@@ -76,7 +76,7 @@ fn main() -> Result<(), syact::Error> {
         loop {
             if (counter % 20) == 0 {
                 stat.user_terminal.set_start_led(
-                    !stat.user_terminal.is_halt_led_on()
+                    !stat.user_terminal.is_start_led_on()
                 ).unwrap();
             }
 
