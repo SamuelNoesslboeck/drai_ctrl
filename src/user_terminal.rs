@@ -1,30 +1,22 @@
-use embedded_hal::pwm::ErrorKind;
-use rppal::gpio::{Gpio, InputPin, OutputPin};
+use rppal::gpio::{Gpio, InputPin, Level, OutputPin};
 use syact::Setup;
-use syact::device::{SoftwarePWM, LED};
 
 pub struct UserTerminal {
     switch_start : InputPin,
-    led_start : LED<SoftwarePWM<OutputPin>>,
+    led_start : OutputPin,
 
     switch_halt : InputPin,
-    led_halt : LED<SoftwarePWM<OutputPin>>,
+    led_halt : OutputPin,
 }
 
 impl UserTerminal {
     pub fn new(gpio : &Gpio, switch_start_pin : u8, led_start_pin : u8, switch_halt_pin : u8, led_halt_pin : u8) -> Result<Self, syact::Error> {
         Ok(Self {
             switch_start: gpio.get(switch_start_pin)?.into_input(),
-            led_start: LED::new(
-                SoftwarePWM::new(gpio.get(led_start_pin)?.into_output_low())
-                    .setup_inline()?
-            ),
+            led_start: gpio.get(led_start_pin)?.into_output_low(),
             
             switch_halt: gpio.get(switch_halt_pin)?.into_input(),
-            led_halt: LED::new(
-                SoftwarePWM::new(gpio.get(led_halt_pin)?.into_output_low())
-                    .setup_inline()?
-            )
+            led_halt: gpio.get(led_halt_pin)?.into_output_low()
         })
     }
 
@@ -41,19 +33,19 @@ impl UserTerminal {
 
     // LEDS
         pub fn is_start_led_on(&self) -> bool {
-            self.led_start.is_on()
+            self.led_start.is_set_high()
         }
 
-        pub fn set_start_led(&mut self, value : bool) -> Result<(), ErrorKind> {
-            self.led_start.set(value)
+        pub fn set_start_led(&mut self, value : bool) {
+            self.led_start.write(Level::from(value))
         }
 
         pub fn is_halt_led_on(&self) -> bool {
-            self.led_halt.is_on()
+            self.led_halt.is_set_high()
         }
 
-        pub fn set_halt_led(&mut self, value : bool) -> Result<(), ErrorKind> {
-            self.led_halt.set(value)
+        pub fn set_halt_led(&mut self, value : bool) {
+            self.led_start.write(Level::from(value))
         }
     // 
 }
@@ -61,10 +53,10 @@ impl UserTerminal {
 impl Setup for UserTerminal {
     fn setup(&mut self) -> Result<(), syact::Error> {
         // self.switch_start.setup()?;
-        self.led_start.setup()?;
+        // self.led_start.setup()?;
 
         // self.switch_halt.setup()?;
-        self.led_halt.setup()?;
+        // self.led_halt.setup()?;
 
         Ok(())
     }

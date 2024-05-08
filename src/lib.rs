@@ -1,11 +1,9 @@
 use rppal::gpio::{Gpio, OutputPin};
-use rppal::i2c::I2c;
 use syact::meas::take_simple_meas;
 use syact::prelude::*;
 use sybot::prelude::*;
 
 use crate::config::{DrakeConfig, DrakeHardware};
-use crate::servo_table::ServoTable;
 use crate::user_terminal::UserTerminal;
 
 // Submodules
