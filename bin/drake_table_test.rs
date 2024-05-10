@@ -67,6 +67,8 @@ fn main() {
                 table.set_servo_standby(id).unwrap();
             }
 
+        } else if state == "roll" {
+
         } else {
             println!("Invalid state given!");
         }
