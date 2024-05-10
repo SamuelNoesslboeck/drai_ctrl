@@ -127,7 +127,7 @@ use crate::user_terminal::UserTerminal;
         type Robot = DrakeRobot;
 
         fn home(&mut self, rob : &mut Self::Robot) -> Result<(), sybot::Error> {
-            self.servo_table.set_all_closed()?;
+            self.servo_table.set_all_open()?;
 
             log::info!("Driving to home position ... ");
 

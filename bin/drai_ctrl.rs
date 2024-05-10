@@ -27,10 +27,12 @@ fn main() -> Result<(), syact::Error> {
     // Cmd
         let matches = command!() 
             .about("Table testing program for the drake robot")
-            .arg(arg!([command] "Directly apply a command").value_parser(value_parser!(String)))
+            .arg(arg!([command] "The command to execute").value_parser(value_parser!(String)))
+            .arg(arg!([arg1] "The first argument for the command").value_parser(value_parser!(String)))
             .get_matches();
 
-        let command_opt : Option<&String> = matches.get_one::<String>("command");
+        let command_opt : Option<String> = matches.get_one::<String>("command").map(|v| v.clone());
+        let arg1_opt : Option<String> = matches.get_one::<String>("arg1").map(|v| v.clone());
     //  
 
     // Header
@@ -77,7 +79,9 @@ fn main() -> Result<(), syact::Error> {
     rob.comps_mut().apply_inertias(&config.weights);
     rob.setup().unwrap();
 
-    let cmd = command_opt.map(|v| v.clone()).unwrap_or(String::from("main"));
+    stat.servo_table.set_all_closed().unwrap();
+
+    let cmd = command_opt.unwrap_or(String::from("help"));
 
     if cmd == "main" {
         print!(" -> Waiting for user input ... ");
@@ -96,6 +100,45 @@ fn main() -> Result<(), syact::Error> {
 
     } else if cmd == "calibrate" {
         stat.home(&mut rob)?;
+
+    } else if cmd == "test_table" {
+        let state = arg1_opt.unwrap_or(String::from("open"));
+
+        if state == "open" {
+            stat.servo_table.set_all_open().unwrap();
+            println!("Servos are now open!")
+
+        } else if state == "closed" {
+            stat.servo_table.set_all_closed().unwrap();
+            println!("Servos are now closed!");
+
+        } else if state == "standby" {
+            println!("Servos are now on standby!");
+            stat.servo_table.set_all_standby().unwrap();
+
+        } else if state == "single" {
+            println!("Starting single table tester ... ");
+
+            stat.servo_table.set_all_standby().unwrap();
+
+            for id in 0 .. 8 {
+                println!("Servo with id {} now open", id);
+                stat.servo_table.set_servo_open(id).unwrap();
+
+                stat.user_terminal.prompt_start();
+
+                println!("Servo with id {} now closed", id);
+                stat.servo_table.set_servo_open(id).unwrap();
+
+                stat.user_terminal.prompt_start();
+
+                stat.servo_table.set_servo_standby(id).unwrap();
+            }
+
+        } else {
+            println!("Invalid state given!");
+        }
+
     } else {
         println!("Unknown command");
     }

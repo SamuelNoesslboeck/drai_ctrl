@@ -49,6 +49,26 @@ impl UserTerminal {
                 counter += 1;
             }
         }
+
+        pub fn prompt_halt(&mut self) {
+            let mut counter = 0;
+
+            loop {
+                if (counter % 20) == 0 {
+                    self.set_halt_led(
+                        !self.is_halt_led_on()
+                    );
+                }
+    
+                if self.check_halt() {
+                    self.set_halt_led(false);
+                    break;
+                }
+    
+                std::thread::sleep(core::time::Duration::from_millis(25));
+                counter += 1;
+            }
+        }
     // 
 
     // LEDS
