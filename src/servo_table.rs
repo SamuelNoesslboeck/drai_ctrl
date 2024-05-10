@@ -37,7 +37,7 @@ use syunit::*;
     pub const SERVO_INV : [bool; 8] = [ false, false, true, false, true, true, false, true ];
 
     /// Shifts the servo signal, so the servos orientation can be equalized
-    pub const SERVO_SHIFT : [i16; 8] = [ 170, 130, 0, 160, 30, 30, 160, 40 ];
+    pub const SERVO_SHIFT : [i16; 8] = [ 170, 130, 0, 190, 10, 30, 160, 40 ];
 
     /// Servo position in the "closed" state
     pub const SERVO_STATE_CLOSED : u16 = SERVO_SIG_MAX;
