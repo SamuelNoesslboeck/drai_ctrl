@@ -139,6 +139,8 @@ use crate::user_terminal::UserTerminal;
 
             log::info!(" -> Driving to home done!");
 
+            self.servo_table.roll_servos(1.0)?;
+
             Ok(())
         }
     }

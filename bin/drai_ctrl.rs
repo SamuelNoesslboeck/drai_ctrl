@@ -79,7 +79,7 @@ fn main() -> Result<(), syact::Error> {
     rob.comps_mut().apply_inertias(&config.weights);
     rob.setup().unwrap();
 
-    stat.servo_table.set_all_closed().unwrap();
+    stat.servo_table.set_all_open().unwrap();
 
     let cmd = command_opt.unwrap_or(String::from("help"));
 
@@ -135,8 +135,15 @@ fn main() -> Result<(), syact::Error> {
                 stat.servo_table.set_servo_standby(id).unwrap();
             }
 
+        } else if state == "roll" {
+            println!("Rolling servos ... ");
+
+            stat.servo_table.roll_servos(1.0).unwrap();
+
+            println!("Rolling done!");
+
         } else {
-            println!("Invalid state given!");
+            println!("Invalid state ({}) given!", state);
         }
 
     } else {

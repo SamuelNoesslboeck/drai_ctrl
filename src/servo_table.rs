@@ -1,4 +1,5 @@
 use core::fmt::Display;
+use core::time::Duration;
 
 use pwm_pca9685::{Address, Channel, Pca9685};
 use rppal::i2c::I2c;
@@ -151,6 +152,22 @@ impl ServoTable {
                 self.set_servo_standby(i)?;
             }
             
+            Ok(())
+        }
+
+        pub fn roll_servos(&mut self, speed : f32) -> Result<(), ServoTableError> {
+            self.set_all_open()?;
+
+            for id in 0 .. 8 {
+                self.set_servo_closed(id)?;
+                std::thread::sleep(Duration::from_secs_f32(0.15 / speed));
+            }
+
+            for id in 0 .. 8 {
+                self.set_servo_open(id)?;
+                std::thread::sleep(Duration::from_secs_f32(0.15 / speed));
+            }
+
             Ok(())
         }
     // 
