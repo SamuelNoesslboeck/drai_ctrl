@@ -93,7 +93,7 @@ impl ServoTable {
 
         // Maybe invert signal
         if SERVO_INV[id as usize] {
-            signal = SERVO_SIG_MAX - signal;
+            signal = SERVO_SIG_MAX - signal + SERVO_SIG_MIN;
         }
 
         self.pwm.set_channel_on_off(CHANNEL_IDS[id as usize], 0, signal).unwrap();   // TODO: Add board error
