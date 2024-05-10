@@ -9,7 +9,7 @@
     "ratio_y": 8.0,
     "ratio_z": 1.273,
 
-    "weights": [ 0.0, 0.0, 0.0 ],
+    "weights": [ 2.0, 0.5, 2.0 ],
 
     "meas_data_x": {
         "set_gamma": 0.0,

@@ -1,3 +1,5 @@
+use core::fmt::Display;
+
 use pwm_pca9685::{Address, Channel, Pca9685};
 use rppal::i2c::I2c;
 use syact::Setup;
@@ -32,7 +34,7 @@ use syunit::*;
 
 // Configuration
     /// Whether the servo with the given ID should be inverted or not
-    pub const SERVO_INV : [bool; 8] = [ false, true, false, true, true, false, true, false ];
+    pub const SERVO_INV : [bool; 8] = [ false, false, false, false, false, false, false, false ];
 
     /// Servo position in the "closed" state
     pub const SERVO_STATE_CLOSED : u16 = SERVO_SIG_MAX;
@@ -54,6 +56,18 @@ use syunit::*;
         BadId(u8),
         AngleOutOfRange(u8, Gamma)
     }
+
+    impl Display for ServoTableError {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            match *self {
+                Self::BadId(id) => f.write_fmt(format_args!("BadId: The given servo-id '{id}' is invalid!")),
+                Self::AngleOutOfRange(id, ang) => 
+                    f.write_fmt(format_args!("AngleOutOfRange: The given angle '{ang}' for servo {id} is out of range!"))
+            }
+        }
+    }
+
+    impl std::error::Error for ServoTableError { }
 // 
 
 pub struct ServoTable {

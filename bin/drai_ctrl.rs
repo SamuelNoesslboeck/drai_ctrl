@@ -1,5 +1,6 @@
-use core::time::Duration;
 /* use std::io::{stdout, stdin, Read, Write}; */
+
+use clap::{command, arg, value_parser};
 
 use syact::prelude::*;
 use sybot::prelude::*;
@@ -22,6 +23,15 @@ fn main() -> Result<(), syact::Error> {
     // Init logging
         env_logger::init();
     // 
+
+    // Cmd
+        let matches = command!() 
+            .about("Table testing program for the drake robot")
+            .arg(arg!([command] "Directly apply a command").value_parser(value_parser!(String)))
+            .get_matches();
+
+        let command_opt : Option<&String> = matches.get_one::<String>("command");
+    //  
 
     // Header
         println!("#############");
@@ -48,15 +58,14 @@ fn main() -> Result<(), syact::Error> {
         let gpio = rppal::gpio::Gpio::new().unwrap();
         println!("done!");
 
-        /* 
         print!(" -> Loading I2C ... ");
         let i2c = rppal::i2c::I2c::new().unwrap();
-        println!("done!"); */
+        println!("done!");
     // 
 
     // RDS
         let mut rob = drake_robot_new(&hardware, &config, &gpio).unwrap();
-        let mut stat = DrakeStation::new(&hardware, &config, &gpio).unwrap();
+        let mut stat = DrakeStation::new(&hardware, &config, &gpio, i2c).unwrap();
     // 
 
     // // Lines
@@ -68,51 +77,28 @@ fn main() -> Result<(), syact::Error> {
     rob.comps_mut().apply_inertias(&config.weights);
     rob.setup().unwrap();
 
-    print!("Waiting for user input ... ");
+    let cmd = command_opt.map(|v| v.clone()).unwrap_or(String::from("main"));
 
-    // Wait until start has been pressed
-        let mut counter = 0;
+    if cmd == "main" {
+        print!(" -> Waiting for user input ... ");
+        stat.user_terminal.prompt_start();
+        println!("pressed!");
+    
+        print!(" -> Driving to home position ... ");
+        stat.home(&mut rob).unwrap();
+        println!("done!");
+    
+        stat.user_terminal.prompt_start();
+    
+        println!("Starting to draw ... ");
 
-        loop {
-            if (counter % 20) == 0 {
-                stat.user_terminal.set_start_led(
-                    !stat.user_terminal.is_start_led_on()
-                );
-            }
+        stat.home(&mut rob).unwrap();
 
-            if stat.user_terminal.check_start() {
-                println!("pressed!");
-                break;
-            }
-
-            std::thread::sleep(Duration::from_millis(25));
-            counter += 1;
-        }
-    // 
-
-    println!("Driving to home position ... ");
-    stat.home(&mut rob).unwrap();
-
-    // Wait until start has been pressed
-        let mut counter = 0;
-
-        loop {
-            if (counter % 20) == 0 {
-                stat.user_terminal.set_start_led(
-                    !stat.user_terminal.is_start_led_on()
-                );
-            }
-
-            if stat.user_terminal.check_start() {
-                break;
-            }
-
-            std::thread::sleep(Duration::from_millis(25));
-            counter += 1;
-        }
-    // 
-
-    println!("Starting to draw ... ");
+    } else if cmd == "calibrate" {
+        stat.home(&mut rob)?;
+    } else {
+        println!("Unknown command");
+    }
 
     // let pb = ProgressBar::new(lines.contour.len() as u64);
 
@@ -143,8 +129,6 @@ fn main() -> Result<(), syact::Error> {
     // }
 
     // pb.finish_with_message("done");
-
-    stat.home(&mut rob).unwrap();
 
     Ok(())
 }

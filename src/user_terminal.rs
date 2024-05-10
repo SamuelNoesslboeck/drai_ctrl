@@ -29,6 +29,26 @@ impl UserTerminal {
             // Halt button signal is inversed for safety reasons
             self.switch_halt.is_low()
         }
+
+        pub fn prompt_start(&mut self) {
+            let mut counter = 0;
+
+            loop {
+                if (counter % 20) == 0 {
+                    self.set_start_led(
+                        !self.is_start_led_on()
+                    );
+                }
+    
+                if self.check_start() {
+                    self.set_start_led(false);
+                    break;
+                }
+    
+                std::thread::sleep(core::time::Duration::from_millis(25));
+                counter += 1;
+            }
+        }
     // 
 
     // LEDS

@@ -1,13 +1,17 @@
 use rppal::gpio::{Gpio, OutputPin};
+use rppal::i2c::I2c;
 use syact::meas::take_simple_meas;
 use syact::prelude::*;
 use sybot::prelude::*;
 
 use crate::config::{DrakeConfig, DrakeHardware};
+use crate::servo_table::ServoTable;
 use crate::user_terminal::UserTerminal;
 
 // Submodules
     pub mod config;
+
+    pub mod data;
 
     pub mod drawing;
 
@@ -79,7 +83,7 @@ use crate::user_terminal::UserTerminal;
 
 // Station
     pub struct DrakeStation { 
-        // pub servo_table : ServoTable,
+        pub servo_table : ServoTable,
         pub user_terminal : UserTerminal,
 
         pub home : [Phi; 3],
@@ -90,9 +94,9 @@ use crate::user_terminal::UserTerminal;
     }
 
     impl DrakeStation {
-        pub fn new(hw : &DrakeHardware, config : &DrakeConfig, gpio : &Gpio) -> Result<Self, syact::Error> {
+        pub fn new(hw : &DrakeHardware, config : &DrakeConfig, gpio : &Gpio, i2c : I2c) -> Result<Self, syact::Error> {
             Ok(Self {
-                // servo_table: ServoTable::new(i2c)?, 
+                servo_table: ServoTable::new(i2c)?, 
                 user_terminal: UserTerminal::new(
                     gpio,
                     hw.ut_start_switch,
@@ -123,11 +127,17 @@ use crate::user_terminal::UserTerminal;
         type Robot = DrakeRobot;
 
         fn home(&mut self, rob : &mut Self::Robot) -> Result<(), sybot::Error> {
+            self.servo_table.set_all_closed()?;
+
+            log::info!("Driving to home position ... ");
+
             dbg!(take_simple_meas(&mut rob.comps_mut().x, &self.meas_data_x, Factor::MAX)?);
             dbg!(take_simple_meas(&mut rob.comps_mut().y, &self.meas_data_y, Factor::MAX)?);
             dbg!(take_simple_meas(&mut rob.comps_mut().z, &self.meas_data_z, Factor::MAX)?);
 
             dbg!(rob.move_abs_j_sync(self.home, Factor::new(0.75))?);   
+
+            log::info!(" -> Driving to home done!");
 
             Ok(())
         }
