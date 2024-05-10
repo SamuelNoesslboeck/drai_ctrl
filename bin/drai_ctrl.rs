@@ -99,10 +99,22 @@ fn main() -> Result<(), syact::Error> {
 
         stat.home(&mut rob).unwrap();
 
+
     } else if cmd == "calibrate" {
         stat.home(&mut rob)?;
 
+
+    } else if cmd == "prompt_start" {
+        stat.user_terminal.prompt_start();
+
+
+    } else if cmd == "prompt_halt" {
+        stat.user_terminal.prompt_halt();
+        
+
     } else if cmd == "test_table" {
+        // # test_table 
+        // 
         let state = arg1_opt.unwrap_or(String::from("open"));
 
         if state == "open" {
@@ -136,6 +148,7 @@ fn main() -> Result<(), syact::Error> {
                 stat.servo_table.set_servo_standby(id).unwrap();
             }
 
+
         } else if state == "roll" {
             println!("Rolling servos ... ");
 
@@ -150,6 +163,7 @@ fn main() -> Result<(), syact::Error> {
         print!("Waiting for user input ... ");
         stat.user_terminal.prompt_start();
         println!("pressed!")
+
 
     } else {
         println!("Unknown command");
