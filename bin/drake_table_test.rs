@@ -68,7 +68,11 @@ fn main() {
             }
 
         } else if state == "roll" {
+            println!("Rolling servos ... ");
 
+            table.roll_servos(1.0).unwrap();
+
+            println!("Rolling done!");
         } else {
             println!("Invalid state given!");
         }
