@@ -36,14 +36,15 @@ use syunit::*;
     /// Whether the servo with the given ID should be inverted or not
     pub const SERVO_INV : [bool; 8] = [ false, false, true, false, true, true, false, true ];
 
-    pub const SERVO_SHIFT : [i16; 8] = [ 100, 100, 0, 100, 0, 0, 100, 0 ];
+    /// Shifts the servo signal, so the servos orientation can be equalized
+    pub const SERVO_SHIFT : [i16; 8] = [ 150, 120, 0, 140, 20, 10, 140, 20 ];
 
     /// Servo position in the "closed" state
     pub const SERVO_STATE_CLOSED : u16 = SERVO_SIG_MAX;
     /// Servo position in the "open" state
     pub const SERVO_STATE_OPEN : u16 = SERVO_SIG_MIN;
     /// Servo position in the "standby" state
-    pub const SERVO_STATE_STANDBY : u16 = (SERVO_SIG_MIN + SERVO_SIG_MAX) / 2;
+    pub const SERVO_STATE_STANDBY : u16 = SERVO_SIG_MIN + 50;
 // 
 
 // Errors & Helpers
