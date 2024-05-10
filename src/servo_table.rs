@@ -34,7 +34,7 @@ use syunit::*;
 
 // Configuration
     /// Whether the servo with the given ID should be inverted or not
-    pub const SERVO_INV : [bool; 8] = [ false, false, false, false, false, false, false, false ];
+    pub const SERVO_INV : [bool; 8] = [ false, false, true, false, true, true, false, true ];
 
     /// Servo position in the "closed" state
     pub const SERVO_STATE_CLOSED : u16 = SERVO_SIG_MAX;
