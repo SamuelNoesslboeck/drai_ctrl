@@ -36,6 +36,8 @@ use syunit::*;
     /// Whether the servo with the given ID should be inverted or not
     pub const SERVO_INV : [bool; 8] = [ false, false, true, false, true, true, false, true ];
 
+    pub const SERVO_SHIFT : [i16; 8] = [ -100, -100, 0, -100, 0, 0, -100, 0 ];
+
     /// Servo position in the "closed" state
     pub const SERVO_STATE_CLOSED : u16 = SERVO_SIG_MAX;
     /// Servo position in the "open" state
@@ -91,7 +93,10 @@ impl ServoTable {
             return Err(ServoTableError::BadId(id));
         }
 
-        // Maybe invert signal
+        // Shift signal
+        signal = signal.saturating_add_signed(SERVO_SHIFT[id as usize]).clamp(SERVO_SIG_MIN, SERVO_SIG_MAX);
+
+        // Optionally invert signal
         if SERVO_INV[id as usize] {
             signal = SERVO_SIG_MAX - signal + SERVO_SIG_MIN;
         }
