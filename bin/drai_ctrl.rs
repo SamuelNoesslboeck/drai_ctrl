@@ -146,6 +146,10 @@ fn main() -> Result<(), syact::Error> {
             println!("Invalid state ({}) given!", state);
         }
 
+        print!("Waiting for user input ... ");
+        stat.user_terminal.prompt_start();
+        println!("pressed!")
+
     } else {
         println!("Unknown command");
     }
