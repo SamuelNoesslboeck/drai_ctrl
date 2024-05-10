@@ -79,6 +79,7 @@ fn main() -> Result<(), syact::Error> {
     rob.comps_mut().apply_inertias(&config.weights);
     rob.setup().unwrap();
 
+    stat.setup().unwrap();
     stat.servo_table.set_all_open().unwrap();
 
     let cmd = command_opt.unwrap_or(String::from("help"));

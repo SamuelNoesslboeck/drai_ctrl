@@ -116,7 +116,7 @@ use crate::user_terminal::UserTerminal;
 
     impl Setup for DrakeStation {
         fn setup(&mut self) -> Result<(), syact::Error> {
-            // self.servo_table.setup()?;
+            self.servo_table.setup()?;
             self.user_terminal.setup()?;
             
             Ok(())
