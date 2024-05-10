@@ -26,8 +26,7 @@ impl UserTerminal {
         }
 
         pub fn check_halt(&self) -> bool {
-            // Halt button signal is inversed for safety reasons
-            self.switch_halt.is_low()
+            self.switch_halt.is_high()
         }
 
         pub fn prompt_start(&mut self) {
