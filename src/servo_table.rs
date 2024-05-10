@@ -160,12 +160,12 @@ impl ServoTable {
 
             for id in 0 .. 8 {
                 self.set_servo_closed(id)?;
-                std::thread::sleep(Duration::from_secs_f32(0.15 / speed));
+                std::thread::sleep(Duration::from_secs_f32(0.075 / speed));
             }
 
             for id in 0 .. 8 {
                 self.set_servo_open(id)?;
-                std::thread::sleep(Duration::from_secs_f32(0.15 / speed));
+                std::thread::sleep(Duration::from_secs_f32(0.075 / speed));
             }
 
             Ok(())
