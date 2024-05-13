@@ -4,6 +4,8 @@ use core::time::Duration;
 
 use clap::{command, arg, value_parser};
 
+use drake::drawing::{convert_line, load_points};
+use indicatif::ProgressBar;
 use syact::prelude::*;
 use sybot::prelude::*;
 
@@ -72,10 +74,6 @@ fn main() -> Result<(), syact::Error> {
         let mut stat = DrakeStation::new(&hardware, &config, &gpio, i2c).unwrap();
     // 
 
-    // // Lines
-    //     let lines = load_points(path.as_str());
-    // // 
-
     // Init
     rob.comps_mut().set_config(StepperConfig::new(hardware.voltage, None));
     rob.comps_mut().apply_inertias(&config.weights);
@@ -86,26 +84,46 @@ fn main() -> Result<(), syact::Error> {
 
     let cmd = command_opt.unwrap_or(String::from("help"));
 
-    if cmd == "main" {
-        print!(" -> Waiting for user input ... ");
-        stat.user_terminal.prompt_start();
-        println!("pressed!");
-    
-        print!(" -> Driving to home position ... ");
-        stat.home(&mut rob).unwrap();
-        println!("done!");
-    
-        stat.user_terminal.prompt_start();
-    
-        println!("Starting to draw ... ");
+    if cmd == "draw_file" {
+        let path = arg1_opt.unwrap();
 
-        stat.home(&mut rob).unwrap();
+        let lines = load_points(&path);
+        let pb = ProgressBar::new(lines.contour.len() as u64);
+
+        // Safe to use
+        let mut last_point = unsafe { core::mem::zeroed() };
+        
+
+        if let Some(&init_line) = lines.contour.first() {
+            let [ p1, _ ] = convert_line(init_line);
+            stat.reposition_pen(&mut rob, p1).unwrap();   
+            last_point = p1;
+        }
+
+        for line in lines.contour {
+            let [ p1, p2 ] = convert_line(line);
+
+            if p1 != last_point {
+                stat.reposition_pen(&mut rob, p1).unwrap();
+            }
+
+            // log::debug!("Driving to {:.unwrap()}", p2);
+            rob.move_abs_j([ p2[0] + Delta(stat.drawing_origin[0].0), p2[1] + Delta(stat.drawing_origin[1].0), stat.drawing_origin[2]], Factor::new(0.5)).unwrap();
+            rob.await_inactive().unwrap();
+            
+            last_point = p2;
+
+            pb.inc(1);
+        }
+
+        pb.finish_with_message("done");
 
 
     } else if cmd == "calibrate_z" {
         loop {
             if stat.user_terminal.check_start() {
                 rob.comps_mut().z.drive_rel(Delta(1.0), Factor::new(0.2)).unwrap();
+                println!("")
             } else if stat.user_terminal.check_halt() {
                 rob.comps_mut().z.drive_rel(Delta(-1.0), Factor::new(0.2)).unwrap();
             } else {
@@ -177,36 +195,6 @@ fn main() -> Result<(), syact::Error> {
     } else {
         println!("Unknown command");
     }
-
-    // let pb = ProgressBar::new(lines.contour.len() as u64);
-
-    // // Safe to use
-    // let mut last_point = unsafe { core::mem::zeroed() };
-    
-
-    // if let Some(&init_line) = lines.contour.first() {
-    //     let [ p1, _ ] = convert_line(init_line);
-    //     stat.reposition_pen(&mut rob, p1).unwrap();   
-    //     last_point = p1;
-    // }
-
-    // for line in lines.contour {
-    //     let [ p1, p2 ] = convert_line(line);
-
-    //     if p1 != last_point {
-    //         stat.reposition_pen(&mut rob, p1).unwrap();
-    //     }
-
-    //     log::debug!("Driving to {:.unwrap()}", p2);
-    //     rob.move_abs_j(p2, draw_speed).unwrap();
-    //     rob.await_inactive().unwrap();
-        
-    //     last_point = p2;
-
-    //     pb.inc(1);
-    // }
-
-    // pb.finish_with_message("done");
 
     Ok(())
 }

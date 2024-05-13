@@ -35,15 +35,15 @@ use crate::user_terminal::UserTerminal;
     pub fn drake_robot_new(hw : &DrakeHardware, config : &DrakeConfig, gpio : &Gpio) -> Result<DrakeRobot, syact::Error> {
         Ok(DrakeRobot::new([
             AngleConfig {
-                offset: config.offset_x,
+                offset: Delta::ZERO,
                 counter: false
             },
             AngleConfig {
-                offset: config.offset_y,
+                offset: Delta::ZERO,
                 counter: false
             },
             AngleConfig {
-                offset: config.offset_z,
+                offset: Delta::ZERO,
                 counter: false
             }
         ], DrakeComponents {
@@ -87,10 +87,14 @@ use crate::user_terminal::UserTerminal;
         pub user_terminal : UserTerminal,
 
         pub home : [Phi; 3],
+        pub drawing_origin : [Phi; 3],
 
         pub meas_data_x : SimpleMeasData,
         pub meas_data_y : SimpleMeasData,
-        pub meas_data_z : SimpleMeasData
+        pub meas_data_z : SimpleMeasData,
+
+        // Values
+        pub z_lift : f32 
     }
 
     impl DrakeStation {
@@ -106,11 +110,23 @@ use crate::user_terminal::UserTerminal;
                 )?,
 
                 home: config.home,
+                drawing_origin: config.drawing_origin,
 
                 meas_data_x: config.meas_data_x.clone(),
                 meas_data_y: config.meas_data_y.clone(),
-                meas_data_z: config.meas_data_z.clone()
+                meas_data_z: config.meas_data_z.clone(),
+
+                z_lift: config.z_lift
             })
+        }
+        
+        // pub fn into
+
+        pub fn reposition_pen(&self, rob : &mut DrakeRobot, point : [Phi; 2]) -> Result<(), syact::Error> {
+            rob.comps_mut().z.drive_abs(Gamma(self.z_lift), Factor::MAX)?;
+            rob.comps_mut().x.drive_abs(Gamma(point[0].0 + self.drawing_origin[0].0), Factor::MAX)?;
+            rob.comps_mut().y.drive_abs(Gamma(point[1].0 + self.drawing_origin[1].0), Factor::MAX)?;
+            rob.comps_mut().z.drive_abs(Gamma(-self.z_lift), Factor::MAX)
         }
     }
 
@@ -135,7 +151,9 @@ use crate::user_terminal::UserTerminal;
             dbg!(take_simple_meas(&mut rob.comps_mut().y, &self.meas_data_y, Factor::MAX)?);
             dbg!(take_simple_meas(&mut rob.comps_mut().z, &self.meas_data_z, Factor::MAX)?);
 
-            dbg!(rob.move_abs_j_sync(self.home, Factor::new(0.75))?);   
+            dbg!(rob.comps_mut().z.drive_abs(Gamma(self.home[2].0), Factor::new(0.75)))?;   
+            dbg!(rob.comps_mut().x.drive_abs(Gamma(self.home[0].0), Factor::new(0.75)))?;
+            dbg!(rob.comps_mut().y.drive_abs(Gamma(self.home[1].0), Factor::new(0.75)))?;
 
             log::info!(" -> Driving to home done!");
 

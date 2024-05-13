@@ -94,10 +94,8 @@ impl DrakeEnvironment {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct DrakeConfig {
     pub home : [Phi; 3],
-
-    pub offset_x : Delta,
-    pub offset_y : Delta,
-    pub offset_z : Delta,
+    pub drawing_origin : [Phi; 3],
+    pub z_lift : f32,
 
     pub ratio_x : f32,
     pub ratio_y : f32,
