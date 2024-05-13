@@ -1,5 +1,7 @@
 /* use std::io::{stdout, stdin, Read, Write}; */
 
+use core::time::Duration;
+
 use clap::{command, arg, value_parser};
 
 use syact::prelude::*;
@@ -100,9 +102,16 @@ fn main() -> Result<(), syact::Error> {
         stat.home(&mut rob).unwrap();
 
 
-    } else if cmd == "calibrate" {
-        stat.home(&mut rob)?;
-
+    } else if cmd == "calibrate_z" {
+        loop {
+            if stat.user_terminal.check_start() {
+                rob.comps_mut().z.drive_rel(Delta(1.0), Factor::new(0.2)).unwrap();
+            } else if stat.user_terminal.check_halt() {
+                rob.comps_mut().z.drive_rel(Delta(-1.0), Factor::new(0.2)).unwrap();
+            } else {
+                std::thread::sleep(Duration::from_millis(50));
+            }
+        }
 
     } else if cmd == "prompt_start" {
         stat.user_terminal.prompt_start();
@@ -110,7 +119,7 @@ fn main() -> Result<(), syact::Error> {
 
     } else if cmd == "prompt_halt" {
         stat.user_terminal.prompt_halt();
-        
+
 
     } else if cmd == "test_table" {
         // # test_table 
