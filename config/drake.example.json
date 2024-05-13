@@ -14,18 +14,21 @@
     "meas_data_x": {
         "set_gamma": 0.0,
         "max_dist": 700.0,
+        "add_samples": 0,
 
         "meas_speed": 1.0
     },
     "meas_data_y": {
         "set_gamma": 0.0,
         "max_dist": 500.0,
+        "add_samples": 0,
 
         "meas_speed": 1.0
     },
     "meas_data_z": {
         "set_gamma": 0.0,
         "max_dist": -300.0,
+        "add_samples": 0,
 
         "meas_speed": 1.0
     },
