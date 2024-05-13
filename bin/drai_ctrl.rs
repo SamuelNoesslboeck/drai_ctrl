@@ -85,6 +85,10 @@ fn main() -> Result<(), syact::Error> {
     let cmd = command_opt.unwrap_or(String::from("help"));
 
     if cmd == "draw_file" {
+        stat.user_terminal.prompt_start();
+
+        stat.home(&mut rob)?;
+
         let path = arg1_opt.unwrap();
 
         let lines = load_points(&path);
