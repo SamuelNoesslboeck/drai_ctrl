@@ -151,6 +151,8 @@ use crate::user_terminal::UserTerminal;
             dbg!(take_simple_meas(&mut rob.comps_mut().y, &self.meas_data_y, Factor::MAX)?);
             dbg!(take_simple_meas(&mut rob.comps_mut().z, &self.meas_data_z, Factor::MAX)?);
 
+            dbg!(rob.gammas());
+
             dbg!(rob.comps_mut().z.drive_abs(Gamma(self.home[2].0), Factor::new(0.75)))?;   
             dbg!(rob.comps_mut().x.drive_abs(Gamma(self.home[0].0), Factor::new(0.75)))?;
             dbg!(rob.comps_mut().y.drive_abs(Gamma(self.home[1].0), Factor::new(0.75)))?;
