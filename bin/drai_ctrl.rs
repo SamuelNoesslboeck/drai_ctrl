@@ -6,6 +6,7 @@ use clap::{command, arg, value_parser};
 
 use drake::drawing::{convert_line, load_points};
 use indicatif::ProgressBar;
+use log::info;
 use syact::prelude::*;
 use sybot::prelude::*;
 
@@ -40,33 +41,33 @@ fn main() -> Result<(), syact::Error> {
     //  
 
     // Header
-        println!("#############");
-        println!("# DRAI-CTRL #");
-        println!("#############");
+        info!("#############");
+        info!("# DRAI-CTRL #");
+        info!("#############");
     // 
 
     // Config
-        print!(" -> Loading hardware from variables ... ");
+        info!(" -> Loading hardware from variables ... ");
         let hardware = DrakeHardware::parse_from_env().unwrap();
-        println!("done!");
+        info!("    | => done!");
 
         print!(" -> Loading environment from variables ... ");
         let environment = DrakeEnvironment::parse_from_env().unwrap();
-        println!("done!");
+        println!("    | => done!");
 
-        print!(" -> Loading config at path '{}' ... ", &environment.config_path); 
+        info!(" -> Loading config at path '{}' ... ", &environment.config_path); 
         let config = DrakeConfig::parse_from_file(&environment.config_path).unwrap();
-        println!("done!");
+        info!("    | => done!");
     // 
 
     // Hardware
-        print!(" -> Loading GPIO ... ");
+        info!(" -> Loading GPIO ... ");
         let gpio = rppal::gpio::Gpio::new().unwrap();
-        println!("done!");
+        info!("    | => done!");
 
-        print!(" -> Loading I2C ... ");
+        info!(" -> Loading I2C ... ");
         let i2c = rppal::i2c::I2c::new().unwrap();
-        println!("done!");
+        info!("    | => done!");
     // 
 
     // RDS
@@ -89,7 +90,7 @@ fn main() -> Result<(), syact::Error> {
 
         stat.home(&mut rob)?;
 
-        let path = arg1_opt.unwrap();
+        /* let path = arg1_opt.unwrap();
 
         let lines = load_points(&path);
         let pb = ProgressBar::new(lines.contour.len() as u64);
@@ -121,7 +122,7 @@ fn main() -> Result<(), syact::Error> {
         }
 
         pb.finish_with_message("done");
-
+        */
 
     } else if cmd == "calibrate_z" {
         loop {
