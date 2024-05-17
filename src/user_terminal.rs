@@ -30,7 +30,7 @@ impl UserTerminal {
         }
 
         pub fn prompt_start(&mut self) {
-            log::debug!("Waiting for start button ... ");
+            log::debug!("> Waiting for start button ... ");
 
             let mut counter = 0;
 
@@ -49,10 +49,12 @@ impl UserTerminal {
                 std::thread::sleep(core::time::Duration::from_millis(25));
                 counter += 1;
             }
+
+            log::debug!("> Start button pressed!");
         }
 
         pub fn prompt_halt(&mut self) {
-            log::debug!("Waiting for halt button ... ");
+            log::debug!("> Waiting for halt button ... ");
 
             let mut counter = 0;
 
@@ -71,6 +73,8 @@ impl UserTerminal {
                 std::thread::sleep(core::time::Duration::from_millis(25));
                 counter += 1;
             }
+
+            log::debug!("> Halt button pressed!");
         }
     // 
 

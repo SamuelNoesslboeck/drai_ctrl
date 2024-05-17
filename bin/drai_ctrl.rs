@@ -45,7 +45,7 @@ fn main() -> Result<(), syact::Error> {
         info!("# DRAI-CTRL #");
         info!("#############");
 
-        info!(" => Loading controlls ... ");
+        info!("> Loading controlls ... ");
     // 
 
     // Config
@@ -81,6 +81,8 @@ fn main() -> Result<(), syact::Error> {
     stat.servo_table.set_all_open().unwrap();
 
     let cmd = command_opt.unwrap_or(String::from("help"));
+
+    info!("> Executing command: '{}'", cmd);
 
     if cmd == "draw_file" {
         stat.user_terminal.prompt_start();
@@ -120,17 +122,43 @@ fn main() -> Result<(), syact::Error> {
 
         pb.finish_with_message("done");
         */
+    } else if cmd == "calibrate_x" {
+        loop {
+            if stat.user_terminal.check_start() {
+                rob.comps_mut().x.drive_rel(Delta(1.0), Factor::new(0.2)).unwrap();
+            } 
+            
+            if stat.user_terminal.check_halt() {
+                rob.comps_mut().x.drive_rel(Delta(-1.0), Factor::new(0.2)).unwrap();
+            } 
+
+            std::thread::sleep(Duration::from_millis(50)); 
+        }
+
+    } else if cmd == "calibrate_y" {
+        loop {
+            if stat.user_terminal.check_start() {
+                rob.comps_mut().y.drive_rel(Delta(1.0), Factor::new(0.2)).unwrap();
+            } 
+
+            if stat.user_terminal.check_halt() {
+                rob.comps_mut().y.drive_rel(Delta(-1.0), Factor::new(0.2)).unwrap();
+            }
+
+            std::thread::sleep(Duration::from_millis(50));
+        }
 
     } else if cmd == "calibrate_z" {
         loop {
             if stat.user_terminal.check_start() {
                 rob.comps_mut().z.drive_rel(Delta(1.0), Factor::new(0.2)).unwrap();
-                println!("")
-            } else if stat.user_terminal.check_halt() {
+            } 
+            
+            if stat.user_terminal.check_halt() {
                 rob.comps_mut().z.drive_rel(Delta(-1.0), Factor::new(0.2)).unwrap();
-            } else {
-                std::thread::sleep(Duration::from_millis(50));
             }
+            
+            std::thread::sleep(Duration::from_millis(50));
         }
 
     } else if cmd == "prompt_start" {
