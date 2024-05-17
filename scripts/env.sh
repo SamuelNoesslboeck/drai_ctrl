@@ -19,6 +19,9 @@ export DRAI_CTRL_PW_FILE="/key/drai-ctrl/password.key"
 export DRAI_SERVER_USER_FILE="/key/drai-server/username.key"
 export DRAI_SERVER_PW_FILE="/key/drai-server/password.key"
 
+# Other
+export RUST_LOG=info
+
 # Hardware
 ## Stepper 
 export DRAI_CTRL_VOLTAGE=24

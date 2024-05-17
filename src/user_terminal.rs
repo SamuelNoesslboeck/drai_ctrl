@@ -30,6 +30,8 @@ impl UserTerminal {
         }
 
         pub fn prompt_start(&mut self) {
+            log::debug!("Waiting for start button ... ");
+
             let mut counter = 0;
 
             loop {
@@ -50,6 +52,8 @@ impl UserTerminal {
         }
 
         pub fn prompt_halt(&mut self) {
+            log::debug!("Waiting for halt button ... ");
+
             let mut counter = 0;
 
             loop {

@@ -4,8 +4,8 @@ use core::time::Duration;
 
 use clap::{command, arg, value_parser};
 
-use drake::drawing::{convert_line, load_points};
-use indicatif::ProgressBar;
+// use drake::drawing::{convert_line, load_points};
+// use indicatif::ProgressBar;
 use log::info;
 use syact::prelude::*;
 use sybot::prelude::*;
@@ -44,30 +44,27 @@ fn main() -> Result<(), syact::Error> {
         info!("#############");
         info!("# DRAI-CTRL #");
         info!("#############");
+
+        info!(" => Loading controlls ... ");
     // 
 
     // Config
-        info!(" -> Loading hardware from variables ... ");
         let hardware = DrakeHardware::parse_from_env().unwrap();
-        info!("    | => done!");
+        info!(" -> Loading hardware from variables done!");
 
-        print!(" -> Loading environment from variables ... ");
         let environment = DrakeEnvironment::parse_from_env().unwrap();
-        println!("    | => done!");
+        info!(" -> Loading environment from variables done!");
 
-        info!(" -> Loading config at path '{}' ... ", &environment.config_path); 
         let config = DrakeConfig::parse_from_file(&environment.config_path).unwrap();
-        info!("    | => done!");
+        info!(" -> Loading config at path '{}' ... ", &environment.config_path); 
     // 
 
     // Hardware
-        info!(" -> Loading GPIO ... ");
         let gpio = rppal::gpio::Gpio::new().unwrap();
-        info!("    | => done!");
+        info!(" -> Loading GPIO done!");
 
-        info!(" -> Loading I2C ... ");
         let i2c = rppal::i2c::I2c::new().unwrap();
-        info!("    | => done!");
+        info!(" -> Loading I2C done!");
     // 
 
     // RDS
