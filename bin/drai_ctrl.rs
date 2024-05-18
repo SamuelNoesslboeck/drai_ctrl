@@ -144,29 +144,43 @@ fn main() -> Result<(), syact::Error> {
         }
 
     } else if cmd == "calibrate_y" {
+        stat.user_terminal.prompt_start();
+
+        info!("> Driving to home position ... ");
+        stat.home(&mut rob)?;
+
+        info!("> Starting from Y-position: {}", rob.gammas()[1]);
+
+        let mut buffer = String::new();
+
         loop {
-            if stat.user_terminal.check_start() {
-                rob.comps_mut().y.drive_rel(Delta(1.0), Factor::new(0.2)).unwrap();
-            } 
+            println!("| > New Y-Pos: "); 
+            std::io::stdout().flush().unwrap();
+            std::io::stdin().read_line(&mut buffer).unwrap();
+    
+            let new_pos : f32 = buffer.trim().parse().unwrap();
 
-            if stat.user_terminal.check_halt() {
-                rob.comps_mut().y.drive_rel(Delta(-1.0), Factor::new(0.2)).unwrap();
-            }
-
-            std::thread::sleep(Duration::from_millis(50));
+            rob.comps_mut().y.drive_abs(Gamma(new_pos), Factor::HALF).unwrap();
         }
 
     } else if cmd == "calibrate_z" {
+        stat.user_terminal.prompt_start();
+
+        info!("> Driving to home position ... ");
+        stat.home(&mut rob)?;
+
+        info!("> Starting from Z-position: {}", rob.gammas()[2]);
+
+        let mut buffer = String::new();
+
         loop {
-            if stat.user_terminal.check_start() {
-                rob.comps_mut().z.drive_rel(Delta(1.0), Factor::new(0.2)).unwrap();
-            } 
-            
-            if stat.user_terminal.check_halt() {
-                rob.comps_mut().z.drive_rel(Delta(-1.0), Factor::new(0.2)).unwrap();
-            }
-            
-            std::thread::sleep(Duration::from_millis(50));
+            println!("| > New Z-Pos: "); 
+            std::io::stdout().flush().unwrap();
+            std::io::stdin().read_line(&mut buffer).unwrap();
+    
+            let new_pos : f32 = buffer.trim().parse().unwrap();
+
+            rob.comps_mut().z.drive_abs(Gamma(new_pos), Factor::HALF).unwrap();
         }
 
     } else if cmd == "prompt_start" {
