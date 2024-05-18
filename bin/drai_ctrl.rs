@@ -155,6 +155,8 @@ fn main() -> Result<(), syact::Error> {
         info!("> Driving to home position ... ");
         stat.home(&mut rob)?;
 
+        stat.servo_table.set_all_closed().unwrap();
+
         info!("> Starting from Z-position: {}", rob.gammas()[2]);
 
         loop {
