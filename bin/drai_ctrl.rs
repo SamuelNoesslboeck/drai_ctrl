@@ -131,10 +131,10 @@ fn main() -> Result<(), syact::Error> {
 
         info!("> Starting from X-position: {}", rob.gammas()[0]);
 
-        let mut buffer = String::new();
-
         loop {
-            println!("| > New X-Pos: "); 
+            let mut buffer = String::new();
+
+            print!("| > New X-Pos: "); 
             std::io::stdout().flush().unwrap();
             std::io::stdin().read_line(&mut buffer).unwrap();
     
@@ -151,10 +151,10 @@ fn main() -> Result<(), syact::Error> {
 
         info!("> Starting from Y-position: {}", rob.gammas()[1]);
 
-        let mut buffer = String::new();
-
         loop {
-            println!("| > New Y-Pos: "); 
+            let mut buffer = String::new();
+
+            print!("| > New Y-Pos: "); 
             std::io::stdout().flush().unwrap();
             std::io::stdin().read_line(&mut buffer).unwrap();
     
@@ -171,10 +171,10 @@ fn main() -> Result<(), syact::Error> {
 
         info!("> Starting from Z-position: {}", rob.gammas()[2]);
 
-        let mut buffer = String::new();
-
         loop {
-            println!("| > New Z-Pos: "); 
+            let mut buffer = String::new();
+
+            print!("| > New Z-Pos: "); 
             std::io::stdout().flush().unwrap();
             std::io::stdin().read_line(&mut buffer).unwrap();
     
