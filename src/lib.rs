@@ -154,8 +154,8 @@ use crate::user_terminal::UserTerminal;
             dbg!(rob.gammas());
 
             dbg!(rob.comps_mut().z.drive_abs(Gamma(self.home[2].0), Factor::new(0.75)))?;   
-            // dbg!(rob.comps_mut().x.drive_abs(Gamma(self.home[0].0), Factor::new(0.75)))?;
-            // dbg!(rob.comps_mut().y.drive_abs(Gamma(self.home[1].0), Factor::new(0.75)))?;
+            dbg!(rob.comps_mut().x.drive_abs(Gamma(self.home[0].0), Factor::new(0.75)))?;
+            dbg!(rob.comps_mut().y.drive_abs(Gamma(self.home[1].0), Factor::new(0.75)))?;
 
             log::info!(" -> Driving to home done!");
 

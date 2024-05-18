@@ -1,6 +1,7 @@
 /* use std::io::{stdout, stdin, Read, Write}; */
 
 use core::time::Duration;
+use std::io::Write;
 
 use clap::{command, arg, value_parser};
 
@@ -50,21 +51,21 @@ fn main() -> Result<(), syact::Error> {
 
     // Config
         let hardware = DrakeHardware::parse_from_env().unwrap();
-        info!(" -> Loading hardware from variables done!");
+        info!("| > Loading hardware from variables done!");
 
         let environment = DrakeEnvironment::parse_from_env().unwrap();
-        info!(" -> Loading environment from variables done!");
+        info!("| > Loading environment from variables done!");
 
         let config = DrakeConfig::parse_from_file(&environment.config_path).unwrap();
-        info!(" -> Loading config at path '{}' ... ", &environment.config_path); 
+        info!("| > Loading config at path '{}' ... ", &environment.config_path); 
     // 
 
     // Hardware
         let gpio = rppal::gpio::Gpio::new().unwrap();
-        info!(" -> Loading GPIO done!");
+        info!("| > Loading GPIO done!");
 
         let i2c = rppal::i2c::I2c::new().unwrap();
-        info!(" -> Loading I2C done!");
+        info!("| > Loading I2C done!");
     // 
 
     // RDS
@@ -123,16 +124,21 @@ fn main() -> Result<(), syact::Error> {
         pb.finish_with_message("done");
         */
     } else if cmd == "calibrate_x" {
-        loop {
-            if stat.user_terminal.check_start() {
-                rob.comps_mut().x.drive_rel(Delta(1.0), Factor::new(0.2)).unwrap();
-            } 
-            
-            if stat.user_terminal.check_halt() {
-                rob.comps_mut().x.drive_rel(Delta(-1.0), Factor::new(0.2)).unwrap();
-            } 
+        info!("> Driving to home position ... ");
+        stat.home(&mut rob)?;
 
-            std::thread::sleep(Duration::from_millis(50)); 
+        info!("> Starting from X-position: {}", rob.gammas()[0]);
+
+        let mut buffer = String::new();
+
+        loop {
+            print!("| > New X-Pos: "); 
+            std::io::stdout().flush().unwrap();
+            std::io::stdin().read_line(&mut buffer).unwrap();
+    
+            let new_pos : f32 = buffer.trim().parse().unwrap();
+
+            rob.comps_mut().x.drive_abs(Gamma(new_pos), Factor::HALF).unwrap();
         }
 
     } else if cmd == "calibrate_y" {
@@ -176,28 +182,28 @@ fn main() -> Result<(), syact::Error> {
 
         if state == "open" {
             stat.servo_table.set_all_open().unwrap();
-            println!("Servos are now open!")
+            info!("> Servos are now open!")
 
         } else if state == "closed" {
             stat.servo_table.set_all_closed().unwrap();
-            println!("Servos are now closed!");
+            info!("> Servos are now closed!");
 
         } else if state == "standby" {
-            println!("Servos are now on standby!");
+            info!("> Servos are now on standby!");
             stat.servo_table.set_all_standby().unwrap();
 
         } else if state == "single" {
-            println!("Starting single table tester ... ");
+            info!("> Starting single table tester ... ");
 
             stat.servo_table.set_all_standby().unwrap();
 
             for id in 0 .. 8 {
-                println!("Servo with id {} now open", id);
+                info!("| > Servo with id {} now open", id);
                 stat.servo_table.set_servo_open(id).unwrap();
 
                 stat.user_terminal.prompt_start();
 
-                println!("Servo with id {} now closed", id);
+                info!("| > Servo with id {} now closed", id);
                 stat.servo_table.set_servo_open(id).unwrap();
 
                 stat.user_terminal.prompt_start();
@@ -207,23 +213,17 @@ fn main() -> Result<(), syact::Error> {
 
 
         } else if state == "roll" {
-            println!("Rolling servos ... ");
+            info!("> Rolling servos ... ");
 
             stat.servo_table.roll_servos(1.0).unwrap();
 
-            println!("Rolling done!");
+            info!("| > Rolling done!");
 
         } else {
-            println!("Invalid state ({}) given!", state);
+            info!("> Invalid state ({}) given!", state);
         }
-
-        print!("Waiting for user input ... ");
-        stat.user_terminal.prompt_start();
-        println!("pressed!")
-
-
     } else {
-        println!("Unknown command");
+        info!("> Unknown command");
     }
 
     Ok(())
