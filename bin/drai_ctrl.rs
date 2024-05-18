@@ -134,7 +134,7 @@ fn main() -> Result<(), syact::Error> {
         let mut buffer = String::new();
 
         loop {
-            print!("| > New X-Pos: "); 
+            println!("| > New X-Pos: "); 
             std::io::stdout().flush().unwrap();
             std::io::stdin().read_line(&mut buffer).unwrap();
     
