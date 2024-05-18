@@ -78,7 +78,11 @@ fn main() -> Result<(), syact::Error> {
         
         rob.await_inactive()?;
 
-        // rob.move_abs_j(config.drawing_origin, Factor::new(0.5)).unwrap();
+        stat.servo_table.set_all_closed().unwrap();
+
+        rob.move_abs_j(config.drawing_origin, Factor::new(0.5)).unwrap();
+
+        rob.await_inactive()?;
 
         /* let path = arg1_opt.unwrap();
 
