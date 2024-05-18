@@ -95,7 +95,7 @@ impl DrakeEnvironment {
 pub struct DrakeConfig {
     pub home : [Phi; 3],
     pub drawing_origin : [Phi; 3],
-    pub z_lift : f32,
+    pub z_lift : Delta,
 
     pub ratio_x : f32,
     pub ratio_y : f32,
