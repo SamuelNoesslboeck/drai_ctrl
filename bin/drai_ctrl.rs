@@ -1,4 +1,4 @@
-#[allow(unused_must_use)]
+#![allow(unused_must_use)]
 
 use std::io::Write;
 
@@ -87,6 +87,9 @@ fn main() -> Result<(), syact::Error> {
         rob.comps_mut().z.drive_abs(Gamma(config.drawing_origin[2].0), Factor::new(0.5)).unwrap();
 
         rob.await_inactive();
+
+
+        std::thread::sleep(std::time::Duration::from_millis(3000));
 
         /* let path = arg1_opt.unwrap();
 
