@@ -4,8 +4,8 @@ use std::io::Write;
 
 use clap::{command, arg, value_parser};
 
-// use drake::drawing::{convert_line, load_points};
-// use indicatif::ProgressBar;
+use drake::drawing::{convert_line, load_points};
+use indicatif::ProgressBar;
 use log::info;
 use syact::prelude::*;
 use sybot::prelude::*;
@@ -89,9 +89,9 @@ fn main() -> Result<(), syact::Error> {
         rob.await_inactive();
 
 
-        // std::thread::sleep(std::time::Duration::from_millis(3000));
+        std::thread::sleep(std::time::Duration::from_millis(3000));
 
-        /* let path = arg1_opt.unwrap();
+        let path = arg1_opt.unwrap();
 
         let lines = load_points(&path);
         let pb = ProgressBar::new(lines.contour.len() as u64);
@@ -115,7 +115,7 @@ fn main() -> Result<(), syact::Error> {
 
             // log::debug!("Driving to {:.unwrap()}", p2);
             rob.move_abs_j([ p2[0] + Delta(stat.drawing_origin[0].0), p2[1] + Delta(stat.drawing_origin[1].0), stat.drawing_origin[2]], Factor::new(0.5)).unwrap();
-            rob.await_inactive().unwrap();
+            rob.await_inactive();
             
             last_point = p2;
 
@@ -123,7 +123,7 @@ fn main() -> Result<(), syact::Error> {
         }
 
         pb.finish_with_message("done");
-        */
+        
     } else if cmd == "calibrate_x" {
         stat.user_terminal.prompt_start();
 
