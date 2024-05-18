@@ -58,9 +58,6 @@ use crate::user_terminal::UserTerminal;
                     .add_interruptor_inline(Box::new(
                         EndSwitch::new(false, Some(Direction::CW), gpio.get(hw.x_meas_pos)?.into_input())
                     ))
-                    .add_interruptor_inline(Box::new(
-                        EndSwitch::new(false, Some(Direction::CCW), gpio.get(hw.x_meas_neg)?.into_input())
-                    ))
                 , config.ratio_x
             ),
             y: LinearAxis::new(

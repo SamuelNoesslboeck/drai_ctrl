@@ -1,6 +1,3 @@
-/* use std::io::{stdout, stdin, Read, Write}; */
-
-use core::time::Duration;
 use std::io::Write;
 
 use clap::{command, arg, value_parser};
@@ -13,17 +10,6 @@ use sybot::prelude::*;
 
 use drake::{drake_robot_new, DrakeStation};
 use drake::config::{DrakeConfig, DrakeEnvironment, DrakeHardware};
-
-
-// Process
-    /* 
-    fn pause() {
-        let mut stdout = stdout();
-        stdout.write(b"Press Enter to continue...").unwrap();
-        stdout.flush().unwrap();
-        stdin().read(&mut [0]).unwrap();
-    } */
-// 
 
 fn main() -> Result<(), syact::Error> {
     // Init logging
