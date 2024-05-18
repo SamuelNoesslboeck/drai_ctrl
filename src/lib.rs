@@ -151,7 +151,7 @@ use crate::user_terminal::UserTerminal;
             dbg!(rob.gammas());
 
             dbg!(rob.comps_mut().z.drive_abs(Gamma(self.home[2].0), Factor::new(0.75)))?;   
-            rob.comps_mut().z.await_inactive().unwrap();
+            // rob.comps_mut().z.await_inactive().unwrap();
             dbg!(rob.comps_mut().x.drive_abs(Gamma(self.home[0].0), Factor::new(0.5)))?;
             dbg!(rob.comps_mut().y.drive_abs(Gamma(self.home[1].0), Factor::new(0.75)))?;
 
