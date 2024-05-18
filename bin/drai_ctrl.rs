@@ -89,7 +89,7 @@ fn main() -> Result<(), syact::Error> {
         rob.await_inactive();
 
 
-        std::thread::sleep(std::time::Duration::from_millis(3000));
+        // std::thread::sleep(std::time::Duration::from_millis(3000));
 
         /* let path = arg1_opt.unwrap();
 
