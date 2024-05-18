@@ -76,7 +76,7 @@ fn main() -> Result<(), syact::Error> {
 
         stat.home(&mut rob)?;
 
-        rob.move_abs_j(config.drawing_origin, Factor::new(0.5)).unwrap();
+        // rob.move_abs_j(config.drawing_origin, Factor::new(0.5)).unwrap();
 
         /* let path = arg1_opt.unwrap();
 
