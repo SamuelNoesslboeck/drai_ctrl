@@ -124,6 +124,8 @@ fn main() -> Result<(), syact::Error> {
         pb.finish_with_message("done");
         */
     } else if cmd == "calibrate_x" {
+        stat.user_terminal.prompt_start();
+
         info!("> Driving to home position ... ");
         stat.home(&mut rob)?;
 
