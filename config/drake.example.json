@@ -3,8 +3,8 @@
     "drawing_origin": [ 0.0, 0.0, 0.0 ],
     "z_lift": 5.0,
 
-    "ratio_x": 5.0,
-    "ratio_y": 5.0,
+    "ratio_x": 4.8,
+    "ratio_y": 4.8,
     "ratio_z": 1.273,
 
     "weights": [ 1.0, 0.5, 1.0 ],
