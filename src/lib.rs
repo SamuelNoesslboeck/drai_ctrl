@@ -86,9 +86,9 @@ use crate::user_terminal::UserTerminal;
         pub home : [Phi; 3],
         pub drawing_origin : [Phi; 3],
 
-        pub meas_data_x : SimpleMeasData,
-        pub meas_data_y : SimpleMeasData,
-        pub meas_data_z : SimpleMeasData,
+        pub meas_data_x : SimpleMeasParams,
+        pub meas_data_y : SimpleMeasParams,
+        pub meas_data_z : SimpleMeasParams,
 
         // Values
         pub z_lift : Delta
