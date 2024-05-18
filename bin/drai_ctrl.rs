@@ -80,7 +80,9 @@ fn main() -> Result<(), syact::Error> {
 
         stat.servo_table.set_all_closed().unwrap();
 
-        rob.move_abs_j_sync(config.drawing_origin, Factor::new(0.5)).unwrap();
+        rob.comps_mut().x.drive_abs(Gamma(config.drawing_origin[0].0), Factor::new(0.5)).unwrap();
+        rob.comps_mut().y.drive_abs(Gamma(config.drawing_origin[1].0), Factor::new(0.5)).unwrap();
+        rob.comps_mut().z.drive_abs(Gamma(config.drawing_origin[2].0), Factor::new(0.5)).unwrap();
 
         rob.await_inactive()?;
 
