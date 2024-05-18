@@ -75,6 +75,8 @@ fn main() -> Result<(), syact::Error> {
         stat.user_terminal.prompt_start();
 
         stat.home(&mut rob)?;
+        
+        rob.await_inactive()?;
 
         // rob.move_abs_j(config.drawing_origin, Factor::new(0.5)).unwrap();
 
