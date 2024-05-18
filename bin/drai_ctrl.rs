@@ -157,7 +157,7 @@ fn main() -> Result<(), syact::Error> {
 
         stat.servo_table.set_all_closed().unwrap();
 
-        info!("> Starting from Z-position: {}", rob.gammas()[2]);
+        info!("> Starting from Z-position: {}", rob.comps().z.gamma());
 
         loop {
             let mut buffer = String::new();

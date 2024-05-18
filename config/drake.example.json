@@ -1,5 +1,5 @@
 {
-    "home": [ 100.0, 0.0, 50.0 ],
+    "home": [ 100.0, 0.0, 25.0 ],
     "drawing_origin": [ 100.0, 20.0, 0.0 ],
     "z_lift": 5.0,
 
@@ -24,7 +24,7 @@
         "meas_speed": 1.0
     },
     "meas_data_z": {
-        "set_gamma": -100.0,
+        "set_gamma": -50.0,
         "max_dist": -300.0,
         "add_samples": 0,
 
