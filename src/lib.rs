@@ -78,7 +78,7 @@ use crate::user_terminal::UserTerminal;
 
         rob.comps_mut().set_micro([
             hw.x_microsteps, hw.y_microsteps, hw.z_microsteps
-        ]);
+        ])?;
         Ok(rob)
     }
 // 
