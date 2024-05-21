@@ -147,23 +147,28 @@ use crate::user_terminal::UserTerminal;
     impl Station<DrakeComponents, dyn StepperActuator, 3> for DrakeStation {
         type Robot = DrakeRobot;
 
-        async fn calibrate(&mut self, _rob : &mut Self::Robot) -> Result<(), sybot::Error> {
-            todo!()
-        }
-
-        async fn home(&mut self, rob : &mut Self::Robot) -> Result<(), sybot::Error> {
+        async fn calibrate(&mut self, rob : &mut Self::Robot) -> Result<(), sybot::Error> {
             self.servo_table.set_all_open()?;
 
-            log::info!("Driving to home position ... ");
+            log::info!("> Starting to calibrate ... ");
 
             dbg!(take_simple_meas(&mut rob.comps_mut().x, &self.meas_data_x, Factor::MAX).await?);
             dbg!(take_simple_meas(&mut rob.comps_mut().y, &self.meas_data_y, Factor::MAX).await?);
             dbg!(take_simple_meas(&mut rob.comps_mut().z, &self.meas_data_z, Factor::MAX).await?);
 
-            dbg!(rob.gammas());
+            log::info!("> Calibration done! {:?}", rob.gammas());
+
+            Ok(())
+        }
+
+        async fn home(&mut self, rob : &mut Self::Robot) -> Result<(), sybot::Error> {
+            self.servo_table.set_all_open()?;
+
+            self.calibrate(rob).await?;
+
+            log::info!("Driving to home position ... ");
 
             dbg!(rob.comps_mut().z.drive_abs(Gamma(self.home[2].0), Factor::MAX).await)?;   
-            // rob.comps_mut().z.await_inactive().unwrap();
             dbg!(rob.comps_mut().x.drive_abs(Gamma(self.home[0].0), Factor::new(0.6)).await)?;
             dbg!(rob.comps_mut().y.drive_abs(Gamma(self.home[1].0), Factor::MAX).await)?;
 
