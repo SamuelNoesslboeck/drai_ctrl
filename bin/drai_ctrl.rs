@@ -13,7 +13,8 @@ use sybot::prelude::*;
 use drake::{drake_robot_new, DrakeStation};
 use drake::config::{DrakeConfig, DrakeEnvironment, DrakeHardware};
 
-fn main() -> Result<(), syact::Error> {
+#[tokio::main]
+async fn main() -> Result<(), syact::Error> {
     // Init logging
         env_logger::init();
     // 
@@ -76,18 +77,13 @@ fn main() -> Result<(), syact::Error> {
     if cmd == "draw_file" {
         stat.user_terminal.prompt_start();
 
-        stat.home(&mut rob)?;
-        
-        rob.await_inactive();
+        stat.home(&mut rob).await?;
 
         stat.servo_table.set_all_closed().unwrap();
 
-        rob.comps_mut().x.drive_abs(Gamma(config.drawing_origin[0].0), Factor::new(0.5)).unwrap();
-        rob.comps_mut().y.drive_abs(Gamma(config.drawing_origin[1].0), Factor::new(0.5)).unwrap();
-        rob.comps_mut().z.drive_abs(Gamma(config.drawing_origin[2].0), Factor::new(0.5)).unwrap();
-
-        rob.await_inactive();
-
+        // rob.comps_mut().x.drive_abs(Gamma(config.drawing_origin[0].0), Factor::new(0.5)).unwrap();
+        // rob.comps_mut().y.drive_abs(Gamma(config.drawing_origin[1].0), Factor::new(0.5)).unwrap();
+        // rob.comps_mut().z.drive_abs(Gamma(config.drawing_origin[2].0), Factor::new(0.5)).unwrap();
 
         std::thread::sleep(std::time::Duration::from_millis(4000));
 
@@ -114,8 +110,7 @@ fn main() -> Result<(), syact::Error> {
             }
 
             // log::debug!("Driving to {:.unwrap()}", p2);
-            rob.move_abs_j([ p2[0] + Delta(stat.drawing_origin[0].0), p2[1] + Delta(stat.drawing_origin[1].0), stat.drawing_origin[2]], Factor::new(0.5)).unwrap();
-            rob.await_inactive();
+            // rob.move_abs_j([ p2[0] + Delta(stat.drawing_origin[0].0), p2[1] + Delta(stat.drawing_origin[1].0), stat.drawing_origin[2]], Factor::new(0.5)).unwrap();
             
             last_point = p2;
 
@@ -128,7 +123,7 @@ fn main() -> Result<(), syact::Error> {
         stat.user_terminal.prompt_start();
 
         info!("> Driving to home position ... ");
-        stat.home(&mut rob)?;
+        stat.home(&mut rob).await?;
 
         info!("> Starting from X-position: {}", rob.gammas()[0]);
 
@@ -141,14 +136,14 @@ fn main() -> Result<(), syact::Error> {
     
             let new_pos : f32 = buffer.trim().parse().unwrap();
 
-            rob.comps_mut().x.drive_abs(Gamma(new_pos), Factor::HALF).unwrap();
+            rob.comps_mut().x.drive_abs(Gamma(new_pos), Factor::HALF).await.unwrap();
         }
 
     } else if cmd == "calibrate_y" {
         stat.user_terminal.prompt_start();
 
         info!("> Driving to home position ... ");
-        stat.home(&mut rob)?;
+        stat.home(&mut rob).await?;
 
         info!("> Starting from Y-position: {}", rob.gammas()[1]);
 
@@ -161,14 +156,14 @@ fn main() -> Result<(), syact::Error> {
     
             let new_pos : f32 = buffer.trim().parse().unwrap();
 
-            rob.comps_mut().y.drive_abs(Gamma(new_pos), Factor::HALF).unwrap();
+            rob.comps_mut().y.drive_abs(Gamma(new_pos), Factor::HALF).await.unwrap();
         }
 
     } else if cmd == "calibrate_z" {
         stat.user_terminal.prompt_start();
 
         info!("> Driving to home position ... ");
-        stat.home(&mut rob)?;
+        stat.home(&mut rob).await?;
 
         stat.servo_table.set_all_closed().unwrap();
 
@@ -183,7 +178,7 @@ fn main() -> Result<(), syact::Error> {
     
             let new_pos : f32 = buffer.trim().parse().unwrap();
 
-            rob.comps_mut().z.drive_abs(Gamma(new_pos), Factor::HALF).unwrap();
+            rob.comps_mut().z.drive_abs(Gamma(new_pos), Factor::HALF).await.unwrap();
         }
 
     } else if cmd == "prompt_start" {

@@ -25,9 +25,9 @@ use crate::user_terminal::UserTerminal;
 // Robots
     #[derive(StepperActuatorGroup)]
     pub struct DrakeComponents {
-        pub x : LinearAxis<Stepper<OutputPin, OutputPin>>,
-        pub y : LinearAxis<Stepper<OutputPin, OutputPin>>,
-        pub z : LinearAxis<Stepper<OutputPin, OutputPin>>
+        pub x : LinearAxis<ComplexStepper<OutputPin, OutputPin>>,
+        pub y : LinearAxis<ComplexStepper<OutputPin, OutputPin>>,
+        pub z : LinearAxis<ComplexStepper<OutputPin, OutputPin>>
     }
 
     pub type DrakeRobot = StepperRobot<DrakeComponents, dyn StepperActuator, 3>;
@@ -48,27 +48,27 @@ use crate::user_terminal::UserTerminal;
             }
         ], DrakeComponents {
             x: LinearAxis::new(
-                Stepper::new(
+                ComplexStepper::new(
                         GenericPWM::new(
                             gpio.get(hw.x_step)?.into_output(), 
                             gpio.get(hw.x_dir)?.into_output()
                         )?, 
                         StepperConst::MOT_17HE15_1504S
-                    )
+                    )?
                     .add_interruptor_inline(Box::new(
                         EndSwitch::new(false, Some(Direction::CW), gpio.get(hw.x_meas_pos)?.into_input())
                     ))
                 , config.ratio_x
             ),
             y: LinearAxis::new(
-                Stepper::new(GenericPWM::new(gpio.get(hw.y_step).unwrap().into_output(), gpio.get(hw.y_dir).unwrap().into_output()).unwrap(), StepperConst::MOT_17HE15_1504S)
+                ComplexStepper::new(GenericPWM::new(gpio.get(hw.y_step).unwrap().into_output(), gpio.get(hw.y_dir).unwrap().into_output()).unwrap(), StepperConst::MOT_17HE15_1504S)?
                     .add_interruptor_inline(Box::new(
                         EndSwitch::new(false, Some(Direction::CW), gpio.get(hw.y_meas_pos).unwrap().into_input())
                     ))
                 , config.ratio_y
             ),
             z: LinearAxis::new(
-                Stepper::new(GenericPWM::new(gpio.get(hw.z_step).unwrap().into_output(), gpio.get(hw.z_dir).unwrap().into_output()).unwrap(), StepperConst::MOT_17HE15_1504S)
+                ComplexStepper::new(GenericPWM::new(gpio.get(hw.z_step).unwrap().into_output(), gpio.get(hw.z_dir).unwrap().into_output()).unwrap(), StepperConst::MOT_17HE15_1504S)? 
                     .add_interruptor_inline(Box::new(
                         EndSwitch::new(false, Some(Direction::CCW), gpio.get(hw.z_meas_neg).unwrap().into_input())
                     ))
@@ -119,13 +119,13 @@ use crate::user_terminal::UserTerminal;
         
         // pub fn into
         #[allow(unused_must_use)]
-        pub fn reposition_pen(&self, rob : &mut DrakeRobot, point : [Phi; 2]) -> Result<(), syact::Error> {
-            rob.comps_mut().z.drive_rel(self.z_lift, Factor::MAX)?;
-            rob.comps_mut().z.await_inactive();
-            rob.comps_mut().x.drive_abs(Gamma(point[0].0 + self.drawing_origin[0].0), Factor::MAX)?;
-            rob.comps_mut().y.drive_abs(Gamma(point[1].0 + self.drawing_origin[1].0), Factor::MAX)?;
-            rob.comps_mut().z.drive_rel(-self.z_lift, Factor::MAX)?;
-            rob.comps_mut().z.await_inactive();
+        pub fn reposition_pen(&self, _rob : &mut DrakeRobot, _point : [Phi; 2]) -> Result<(), syact::Error> {
+            // rob.comps_mut().z.drive_rel(self.z_lift, Factor::MAX)?;
+            // rob.comps_mut().z.await_inactive();
+            // rob.comps_mut().x.drive_abs(Gamma(point[0].0 + self.drawing_origin[0].0), Factor::MAX)?;
+            // rob.comps_mut().y.drive_abs(Gamma(point[1].0 + self.drawing_origin[1].0), Factor::MAX)?;
+            // rob.comps_mut().z.drive_rel(-self.z_lift, Factor::MAX)?;
+            // rob.comps_mut().z.await_inactive();
             Ok(())
         }
     }
@@ -142,21 +142,25 @@ use crate::user_terminal::UserTerminal;
     impl Station<DrakeComponents, dyn StepperActuator, 3> for DrakeStation {
         type Robot = DrakeRobot;
 
-        fn home(&mut self, rob : &mut Self::Robot) -> Result<(), sybot::Error> {
+        async fn calibrate(&mut self, _rob : &mut Self::Robot) -> Result<(), sybot::Error> {
+            todo!()
+        }
+
+        async fn home(&mut self, rob : &mut Self::Robot) -> Result<(), sybot::Error> {
             self.servo_table.set_all_open()?;
 
             log::info!("Driving to home position ... ");
 
-            dbg!(take_simple_meas(&mut rob.comps_mut().x, &self.meas_data_x, Factor::MAX)?);
-            dbg!(take_simple_meas(&mut rob.comps_mut().y, &self.meas_data_y, Factor::MAX)?);
-            dbg!(take_simple_meas(&mut rob.comps_mut().z, &self.meas_data_z, Factor::MAX)?);
+            dbg!(take_simple_meas(&mut rob.comps_mut().x, &self.meas_data_x, Factor::MAX).await?);
+            dbg!(take_simple_meas(&mut rob.comps_mut().y, &self.meas_data_y, Factor::MAX).await?);
+            dbg!(take_simple_meas(&mut rob.comps_mut().z, &self.meas_data_z, Factor::MAX).await?);
 
             dbg!(rob.gammas());
 
-            dbg!(rob.comps_mut().z.drive_abs(Gamma(self.home[2].0), Factor::MAX))?;   
+            dbg!(rob.comps_mut().z.drive_abs(Gamma(self.home[2].0), Factor::MAX).await)?;   
             // rob.comps_mut().z.await_inactive().unwrap();
-            dbg!(rob.comps_mut().x.drive_abs(Gamma(self.home[0].0), Factor::new(0.6)))?;
-            dbg!(rob.comps_mut().y.drive_abs(Gamma(self.home[1].0), Factor::MAX))?;
+            dbg!(rob.comps_mut().x.drive_abs(Gamma(self.home[0].0), Factor::new(0.6)).await)?;
+            dbg!(rob.comps_mut().y.drive_abs(Gamma(self.home[1].0), Factor::MAX).await)?;
 
             log::info!(" -> Driving to home done!");
 
