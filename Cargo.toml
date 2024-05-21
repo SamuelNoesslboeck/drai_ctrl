@@ -29,6 +29,6 @@ tokio = { version = "1.37.0", features = ["full"] }
 pwm-pca9685 = { version = "1.0.0", features = [ "std" ] }
 rppal = { version = "0.18.0", features = [ "embedded-hal" ] }
 
-syact = "0.13.1"
+syact = "0.13.2"
 sybot = "0.10.1"
 syunit = "0.1.5"

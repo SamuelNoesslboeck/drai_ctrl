@@ -33,7 +33,7 @@ use crate::user_terminal::UserTerminal;
     pub type DrakeRobot = StepperRobot<DrakeComponents, dyn StepperActuator, 3>;
 
     pub fn drake_robot_new(hw : &DrakeHardware, config : &DrakeConfig, gpio : &Gpio) -> Result<DrakeRobot, syact::Error> {
-        Ok(DrakeRobot::new([
+        let mut rob = DrakeRobot::new([
             AngleConfig {
                 offset: Delta::ZERO,
                 counter: false
@@ -74,7 +74,13 @@ use crate::user_terminal::UserTerminal;
                     ))
                 , config.ratio_z
             )
-        }, Vec::new()))
+        }, Vec::new());
+
+        rob.comps_mut().x.set_microsteps(hw.x_microsteps);
+        rob.comps_mut().y.set_microsteps(hw.y_microsteps);
+        rob.comps_mut().z.set_microsteps(hw.z_microsteps);
+
+        Ok(rob)
     }
 // 
 
