@@ -3,30 +3,30 @@
     "drawing_origin": [ 100.0, 20.0, -9.3 ],
     "z_lift": 3.0,
 
-    "ratio_x": 4.8,
-    "ratio_y": 4.8,
-    "ratio_z": 0.6366,
+    "ratio_x": 9.6,
+    "ratio_y": 9.6,
+    "ratio_z": 1.273,
 
     "weights": [ 1.0, 0.5, 1.0 ],
 
     "meas_data_x": {
         "set_gamma": 400.0,
         "max_dist": 700.0,
-        "add_samples": 0,
+        "_add_samples": 0,
 
         "meas_speed": 1.0
     },
     "meas_data_y": {
         "set_gamma": 200.0,
         "max_dist": 500.0,
-        "add_samples": 0,
+        "_add_samples": 0,
 
         "meas_speed": 1.0
     },
     "meas_data_z": {
         "set_gamma": -50.0,
         "max_dist": -300.0,
-        "add_samples": 0,
+        "_add_samples": 0,
 
         "meas_speed": 1.0
     },
