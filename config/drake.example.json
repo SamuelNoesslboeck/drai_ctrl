@@ -5,7 +5,9 @@
 
     "ratio_x": 9.6,
     "ratio_y": 9.6,
-    "ratio_z": 1.273,
+    "ratio_z": 0.6366,
+
+    "max_speed_z": 30.0,
 
     "weights": [ 1.0, 0.5, 4.0 ],
 
