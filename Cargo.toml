@@ -1,6 +1,6 @@
 [package]
 name = "drai_ctrl"
-version = "0.1.0-alpha"
+version = "0.2.0"
 edition = "2021"
 default-run = "drai_ctrl"
 
@@ -29,6 +29,6 @@ tokio = { version = "1.37.0", features = ["full"] }
 pwm-pca9685 = { version = "1.0.0", features = [ "std" ] }
 rppal = { version = "0.18.0", features = [ "embedded-hal" ] }
 
-syact = "0.13.4"
-sybot = "0.10.1"
+syact = "0.13.5"
+sybot = "0.10.2"
 syunit = "0.1.5"

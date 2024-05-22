@@ -81,15 +81,17 @@ async fn main() -> Result<(), syact::Error> {
 
         stat.servo_table.set_all_closed().unwrap();
 
-        // rob.comps_mut().x.drive_abs(Gamma(config.drawing_origin[0].0), Factor::new(0.5)).unwrap();
-        // rob.comps_mut().y.drive_abs(Gamma(config.drawing_origin[1].0), Factor::new(0.5)).unwrap();
-        // rob.comps_mut().z.drive_abs(Gamma(config.drawing_origin[2].0), Factor::new(0.5)).unwrap();
+        rob.move_abs_j(config.drawing_origin, Factor::HALF).await.unwrap();
 
-        std::thread::sleep(std::time::Duration::from_millis(4000));
+        log::info!("> Moving to drawing position done!");
+
+        std::thread::sleep(std::time::Duration::from_millis(1000));
 
         let path = arg1_opt.unwrap();
-
         let lines = load_points(&path);
+
+        log::info!("> Loaded points from file '{}'!", path);
+
         let pb = ProgressBar::new(lines.contour.len() as u64);
 
         // Safe to use
@@ -109,8 +111,10 @@ async fn main() -> Result<(), syact::Error> {
                 stat.reposition_pen(&mut rob, p1).unwrap();
             }
 
-            // log::debug!("Driving to {:.unwrap()}", p2);
-            // rob.move_abs_j([ p2[0] + Delta(stat.drawing_origin[0].0), p2[1] + Delta(stat.drawing_origin[1].0), stat.drawing_origin[2]], Factor::new(0.5)).unwrap();
+            rob.move_abs_j(
+                [ p2[0] + Delta(stat.drawing_origin[0].0), p2[1] + Delta(stat.drawing_origin[1].0), stat.drawing_origin[2]], 
+                Factor::new(0.5)
+            ).await.unwrap();
             
             last_point = p2;
 

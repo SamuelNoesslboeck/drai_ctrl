@@ -122,15 +122,11 @@ use crate::user_terminal::UserTerminal;
             })
         }
         
-        // pub fn into
-        #[allow(unused_must_use)]
-        pub fn reposition_pen(&self, _rob : &mut DrakeRobot, _point : [Phi; 2]) -> Result<(), syact::Error> {
-            // rob.comps_mut().z.drive_rel(self.z_lift, Factor::MAX)?;
-            // rob.comps_mut().z.await_inactive();
-            // rob.comps_mut().x.drive_abs(Gamma(point[0].0 + self.drawing_origin[0].0), Factor::MAX)?;
-            // rob.comps_mut().y.drive_abs(Gamma(point[1].0 + self.drawing_origin[1].0), Factor::MAX)?;
-            // rob.comps_mut().z.drive_rel(-self.z_lift, Factor::MAX)?;
-            // rob.comps_mut().z.await_inactive();
+        pub async fn reposition_pen(&self, rob : &mut DrakeRobot, point : [Phi; 2]) -> Result<(), syact::Error> {
+            rob.comps_mut().z.drive_rel(self.z_lift, Factor::MAX).await?;
+            rob.comps_mut().x.drive_abs(Gamma(point[0].0 + self.drawing_origin[0].0), Factor::MAX).await?;
+            rob.comps_mut().y.drive_abs(Gamma(point[1].0 + self.drawing_origin[1].0), Factor::MAX).await?;
+            rob.comps_mut().z.drive_rel(-self.z_lift, Factor::MAX).await?;
             Ok(())
         }
     }
