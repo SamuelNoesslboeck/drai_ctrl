@@ -100,7 +100,7 @@ async fn main() -> Result<(), syact::Error> {
 
         if let Some(&init_line) = lines.contour.first() {
             let [ p1, _ ] = convert_line(init_line);
-            stat.reposition_pen(&mut rob, p1).unwrap();   
+            stat.reposition_pen(&mut rob, p1).await.unwrap();   
             last_point = p1;
         }
 
@@ -108,7 +108,7 @@ async fn main() -> Result<(), syact::Error> {
             let [ p1, p2 ] = convert_line(line);
 
             if p1 != last_point {
-                stat.reposition_pen(&mut rob, p1).unwrap();
+                stat.reposition_pen(&mut rob, p1).await.unwrap();
             }
 
             rob.move_abs_j(
